@@ -6,7 +6,7 @@
 - UserID
 - Username
 - Password
-- CreatedDate 
+- CreatedAt 
 - IsActive
 
 ### Campaign table
@@ -14,7 +14,7 @@
 - CampaignName
 - DungeonMasterID (UserID foreign key)
 - CampaignStartDate
-- CreatedDate
+- CreatedAt
 - IsActive
 
 ### Character Table
@@ -22,7 +22,7 @@
 - UserID
 - ClassID
 - CharacterName
-- CreatedDate
+- CreatedAt
 
 ### CharacterCampaign Table
 NOTE: A character can be in multiple campaigns at once, it will have a different XP and HP in each one
@@ -31,7 +31,7 @@ NOTE: A character can be in multiple campaigns at once, it will have a different
 - CharacterXP
 - CharacterHP
 - CharacterMaxHP
-- JoinedDate
+- JoinedAt
 
 ### CampaignAuditLog table:
 - CampaignID
