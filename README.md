@@ -1,6 +1,12 @@
 # DNDCampaign
 A Dungeons and Dragons campaign tracker. Tracks users, campaigns, and player characters in the campaigns
 
+## SECURITY WARNING
+Do NOT use real passwords or usernames that you use for other services.
+ 
+This project is not designed for production use without additional security hardening.  
+The maintainers are not responsible for any security breaches or data loss resulting from the use of this software.
+
 ## FEATURES
 - User authentication (login/register)
 - Users can create campaigns and invite other users
@@ -14,10 +20,11 @@ A Dungeons and Dragons campaign tracker. Tracks users, campaigns, and player cha
 ## TECH STACK
 
 ### BACK END
-- API Host: Railway
+- API Host: Render
 - Language: C#
 - IDE: Visual Studio
 - Database: Supabase 
+- Entity Relationship Diagram: dbdiagram.io
 
 ### FRONT END
 - Framework: React 
@@ -60,56 +67,3 @@ A Dungeons and Dragons campaign tracker. Tracks users, campaigns, and player cha
 
 ### Create Character Page
 - Enter Character details
-
-### TABLES 
-- User table
-- UserID
-- Username
-- Password
-- CreatedDate 
-- IsActive
-
-### Campaign table
-- CampaignID
-- CampaignName
-- DungeonMasterID (UserID foreign key)
-- CampaignStartDate
-- CreatedDate
-- IsActive
-
-### Character Table
-- CharacterID
-- UserID
-- CharacterName
-- CharacterClass
-- CreatedDate
-
-### CharacterCampaign Table
-NOTE: A character can be in multiple campaigns at once, it will have a different XP and HP in each one
-- CharacterID
-- CampaignID
-- CharacterXP
-- CharacterHP
-- JoinedDate
-
-### CampaignAuditLog table:
-- CampaignID
-- UserID
-- EventTime
-- EventTypeID
-
-## ENUM TABLES
-
-### CharacterClass table
-- ClassID
-- ClassName
-
-### EventType table
-(Events include Player dies/joins/leaves)
-- EventTypeID
-- EventName 
-
-### Level table
-- LevelID
-- XPToReach
-- LevelNumber 
