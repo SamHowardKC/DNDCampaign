@@ -7,6 +7,11 @@ Do NOT use real passwords or usernames that you use for other services.
 This project is not designed for production use without additional security hardening.  
 The maintainers are not responsible for any security breaches or data loss resulting from the use of this software.
 
+## DOCUMENTATION
+- [Tables & Schema](./tables.md)
+- [Disclaimer](./disclaimer.md)
+
+
 ## FEATURES
 - User authentication (login/register)
 - Users can create campaigns and invite other users
