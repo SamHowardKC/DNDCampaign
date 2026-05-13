@@ -8,9 +8,9 @@ This project is not designed for production use without additional security hard
 The maintainers are not responsible for any security breaches or data loss resulting from the use of this software.
 
 ## DOCUMENTATION
-- [Database Tables](./TABLES.md)
 - [Disclaimer](./DISCLAIMER.md)
-
+- [Database Tables](./TABLES.md)
+- [Database ERD](./DatabaseERD.svg)
 
 ## FEATURES
 - User authentication (login/register)
