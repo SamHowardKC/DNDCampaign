@@ -8,8 +8,8 @@ This project is not designed for production use without additional security hard
 The maintainers are not responsible for any security breaches or data loss resulting from the use of this software.
 
 ## DOCUMENTATION
-- [Tables & Schema](./tables.md)
-- [Disclaimer](./disclaimer.md)
+- [Database Tables](./TABLES.md)
+- [Disclaimer](./DISCLAIMER.md)
 
 
 ## FEATURES
