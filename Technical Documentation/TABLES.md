@@ -48,7 +48,15 @@ NOTE: Every time a character levels up, their hp will increase by a random numbe
 - IncreaseToMaxHpPerLevel
 
 ### EventType table
-(Events include Player dies/joins/leaves)
+#### Event Types Include:
+- Player Dies
+- Player Leaves
+- Player Joins
+- Player Takes Damage
+- Player Awarded XP
+- Player Levels Up
+
+#### Fields:
 - EventTypeID
 - EventName 
 

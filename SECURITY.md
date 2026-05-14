@@ -1,9 +1,17 @@
 # Security Policy
-
-## Important Warning
 Do NOT use real passwords, usernames, or credentials that you use for any other service.  
-This project is not intended to store or handle sensitive information.
+This software is provided for educational and demonstration purposes only, is not intended to store or handle sensitive information.
  
+The maintainers and contributors are NOT responsible for:
+- Security breaches
+- Data loss
+- Misuse of the software
+- Incorrect deployment or configuration
+- Users storing real passwords or sensitive information
+- Any damages arising from the use of this software
+ 
+By using this software, you agree that you do so entirely at your own risk.
+
 ## Supported Versions
 This project is provided as-is. No security guarantees or ongoing security support are provided.
  

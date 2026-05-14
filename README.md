@@ -1,16 +1,18 @@
 # DNDCampaign
 A Dungeons and Dragons campaign tracker. Tracks users, campaigns, and player characters in the campaigns
 
-## SECURITY WARNING
-Do NOT use real passwords or usernames that you use for other services.
- 
-This project is not designed for production use without additional security hardening.  
-The maintainers are not responsible for any security breaches or data loss resulting from the use of this software.
+## SECURITY NOTICE
+This project is not intended for production use without additional hardening.  
+Do NOT use any Sensitive Information (For example Usernames or Passwords that are used in other services) in this project
+See the following files for full details
+- [Security](./SECURITY.md)
+- [License](./LICENSE.md)
+- [Contributing](./CONTRIBUTING.md)
 
-## DOCUMENTATION
-- [Disclaimer](./DISCLAIMER.md)
-- [Database Tables](./TABLES.md)
-- [Database ERD](./DatabaseERD.svg)
+## TECHNICAL DOCUMENTATION
+- [Tech Stack](./Technical%20Documentation/TECHSTACK.md)
+- [Database Tables](./Technical%20Documentation/TABLES.md)
+- [Database ERD](./Technical%20Documentation/DatabaseERD.svg)
 
 ## FEATURES
 - User authentication (login/register)
@@ -21,26 +23,6 @@ The maintainers are not responsible for any security breaches or data loss resul
 - Automatic level calculation based on XP
 - Automatic death detection when HP reaches 0
 - WebSocket-powered live updates when players join or leave a campaign (visible to all connected users)
-
-## TECH STACK
-
-### BACK END
-- API Host: Render
-- Language: C#
-- IDE: Visual Studio
-- Database: Supabase 
-- Entity Relationship Diagram: dbdiagram.io
-
-### FRONT END
-- Framework: React 
-- Hosting: Vercel
-- Language: Typescript
-- IDE: VSCode
-
-### UTILS
-- Database tool - SQL/Postgres extension in VS Code
-- API testing - postman 
-- Version control - GitHub/sourcetree 
 
 ## WEB PAGES
 
