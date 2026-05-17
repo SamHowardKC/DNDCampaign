@@ -17,13 +17,13 @@ namespace BackEnd
                 // Add services to the container
                 builder.Services.AddControllers();
 
-                // ✅ Add Swagger support (works with .NET 8)
+                // Add Swagger support (works with .NET 8)
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
 
                 var app = builder.Build();
 
-                // ✅ Enable Swagger only in development
+                // Enable Swagger only in development
                 if (app.Environment.IsDevelopment())
                 {
                     app.UseSwagger();
@@ -34,7 +34,7 @@ namespace BackEnd
                 app.UseAuthorization();
                 app.MapControllers();
 
-                // ✅ Test endpoint to verify Supabase connection
+                // Test endpoint to verify Supabase connection
                 app.MapGet("/db-test", async () =>
                 {
                     var connString = Environment.GetEnvironmentVariable("SUPABASE_CONNECTION_STRING");
@@ -47,6 +47,8 @@ namespace BackEnd
 
                     return new { message = "Connected!", serverTime = result };
                 });
+
+                app.MapGet("/health", () => "API is running");
 
                 app.Run();
             }
