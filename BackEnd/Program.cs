@@ -1,10 +1,9 @@
 
 using Npgsql;
 using DotNetEnv;
-using Swashbuckle.AspNetCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace BackEnd
 {
@@ -37,23 +36,6 @@ namespace BackEnd
                 app.UseHttpsRedirection();
                 app.UseAuthorization();
                 app.MapControllers();
-
-                // Test endpoint to verify Supabase connection
-                app.MapGet("/db-test", async () =>
-                {
-                    var connString = Environment.GetEnvironmentVariable("SUPABASE_CONNECTION_STRING");
-
-                    await using var conn = new NpgsqlConnection(connString);
-                    await conn.OpenAsync();
-
-                    await using var cmd = new NpgsqlCommand("SELECT NOW()", conn);
-                    var result = await cmd.ExecuteScalarAsync();
-
-                    return new { message = "Connected!", serverTime = result };
-                });
-
-                app.MapGet("/health", () => "API is running");
-
                 app.Run();
             }
         }
