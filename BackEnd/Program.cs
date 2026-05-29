@@ -11,33 +11,45 @@ namespace BackEnd
     {
         public static void Main(string[] args)
         {
+            
+            // Load environment variables from .env
+            Env.Load();
+
+            var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddCors(options =>
             {
-                // Load environment variables from .env
-                Env.Load();
-
-                var builder = WebApplication.CreateBuilder(args);
-
-                // Add services to the container
-                builder.Services.AddControllers();
-
-                // Add Swagger support (works with .NET 8)
-                builder.Services.AddEndpointsApiExplorer();
-                builder.Services.AddSwaggerGen();
-
-                var app = builder.Build();
-
-                // Enable Swagger only in development
-                if (app.Environment.IsDevelopment())
+                options.AddPolicy("AllowFrontend", policy =>
                 {
-                    app.UseSwagger();
-                    app.UseSwaggerUI();
-                }
+                    policy.WithOrigins("http://localhost:5173")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
 
-                app.UseHttpsRedirection();
-                app.UseAuthorization();
-                app.MapControllers();
-                app.Run();
+            // Add services to the container
+            builder.Services.AddControllers();
+
+            // Add Swagger support (works with .NET 8)
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            var app = builder.Build();
+
+            app.UseCors("AllowFrontend");
+
+            // Enable Swagger only in development
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
+
+            app.UseHttpsRedirection();
+            app.UseAuthorization();
+            app.MapControllers();
+            app.Run();
+            
         }
     }
 }
