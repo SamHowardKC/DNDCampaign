@@ -23,27 +23,6 @@ namespace BackEnd
 
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container
-            builder.Services.AddControllers();
-
-            // Register your DbContext here
-            builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("SUPABASE_CONNECTION_STRING")));
-
-            // Register your services, repositories, etc.
-            builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IJwtProvider, JwtProvider>();
-            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline
-            app.MapControllers();
-
-            app.Run();
-
-
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend", policy =>
@@ -54,10 +33,20 @@ namespace BackEnd
                 });
             });
 
-            // Add services to the container
+            // register DbContext
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseNpgsql(Environment.GetEnvironmentVariable("SUPABASE_CONNECTION_STRING")));
+
+            // register services
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+            // add controllers
             builder.Services.AddControllers();
 
-            // Add Swagger support (works with .NET 8)
+            // add swagger support
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
