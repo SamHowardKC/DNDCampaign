@@ -1,4 +1,6 @@
-﻿namespace BackEnd.Services.Interfaces.Auth
+﻿using BackEnd.Entities.Auth;
+
+namespace BackEnd.Services.Interfaces.Auth
 {
     public interface IUserRepository
     {

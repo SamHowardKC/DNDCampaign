@@ -3,7 +3,7 @@ using BackEnd.DTOs.Auth;
 using BackEnd.Entities.Auth;
 using BackEnd.Services.Interfaces.Auth;
 
-namespace BackEnd.Services.Implementation
+namespace BackEnd.Services.Implementation.Auth
 {
     public class AuthService : IAuthService
     {
@@ -25,11 +25,11 @@ namespace BackEnd.Services.Implementation
         {
             // get user
             var user = await _UserRepository.GetByEmailAsync(request.Email);
-            if (user == null || !_PasswordHasher.VerifyHashedPassword(user.PasswordHash, request.Password))
+            if (user == null || !_PasswordHasher.Verify(user.PasswordHash, request.Password))
                 throw new UnauthorizedAccessException("Invalid email or password.");
 
             // verify password
-            var ValidPassword = _PasswordHasher.VerifyHashedPassword(user.PasswordHash, request.Password);
+            var ValidPassword = _PasswordHasher.Verify(user.PasswordHash, request.Password);
             if (!ValidPassword)
                 throw new UnauthorizedAccessException("Invalid email or password.");
 
