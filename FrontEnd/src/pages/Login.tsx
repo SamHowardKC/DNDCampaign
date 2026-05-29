@@ -3,15 +3,53 @@ import React, { useState} from "react";
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    const Authenticate = async () => {
+        setLoading(true);
+        setError("");
+
+        try {
+            //test call, will replace later
+            const response = await fetch(
+                "https://dndcampaign.onrender.com/api/health/health",
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                }
+            );
+        
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            
+            const data = await response.json();
+            console.log("Logged in");
+            // Simulate successful login
+        }
+        catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("An unknown error occurred");
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Login attempt with email:", email);
+        Authenticate();
     };
+
 
     return (
         <div style={styles.container}>
-            <h2 style={styles.title}>login </h2>
+            <h2 style={styles.title}>Login</h2>
 
             <form onSubmit={handleSubmit} style={styles.form}>
                 <input
@@ -22,6 +60,7 @@ export default function Login() {
                     required
                     style={styles.input}
                 />
+
                 <input
                     type="password"
                     placeholder="Password"
@@ -30,14 +69,18 @@ export default function Login() {
                     required
                     style={styles.input}
                 />
-                <button type="submit" style={styles.button}>
-                    Login
-                </button>
-            </form>                                                                         
-        </div>
-    )
 
+                {error && <p style={{ color: "red" }}>{error}</p>}
+
+                <button type="submit" style={styles.button} disabled={loading}>
+                    {loading ? "Logging in..." : "Login"}
+                </button>
+            </form>
+        </div>
+    );
 }
+
+
 
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
