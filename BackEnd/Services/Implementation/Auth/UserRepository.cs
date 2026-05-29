@@ -16,12 +16,12 @@ namespace BackEnd.Services.Implementation.Auth
 
         public async Task<User?> GetByEmailAsync(string email)
         {
-            return await _Context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return await _Context.User.FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task CreateAsync(User user)
         {
-            _Context.Users.Add(user);
+            _Context.User.Add(user);
             await _Context.SaveChangesAsync();
         }
     }

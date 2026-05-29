@@ -32,7 +32,7 @@ namespace BackEnd.Services.Implementation.Auth
             {
                  new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                  new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                 new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString())
             };
 
             var token = new JwtSecurityToken(
