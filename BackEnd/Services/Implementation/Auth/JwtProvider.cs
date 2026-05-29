@@ -19,7 +19,12 @@ namespace BackEnd.Services.Implementation.Auth
 
         public string GenerateToken(User user)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Config["Jwt:Key"]));
+            var keyString = _Config["Jwt:Key"];
+
+            if (string.IsNullOrEmpty(keyString))
+                throw new Exception("JWT Key is missing from configuration.");
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

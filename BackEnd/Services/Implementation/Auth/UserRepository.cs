@@ -14,7 +14,7 @@ namespace BackEnd.Services.Implementation.Auth
             _Context = context;
         }
 
-        public async Task<User> GetByEmailAsync(string email)
+        public async Task<User?> GetByEmailAsync(string email)
         {
             return await _Context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
