@@ -27,7 +27,7 @@ export default function Login() {
             }
             
             const data = await response.json();
-            console.log("Logged in");
+            console.log("Logged in", data);
             // Simulate successful login
         }
         catch (err: unknown) {
