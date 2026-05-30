@@ -2,6 +2,8 @@
 using BackEnd.DTOs.Auth;
 using BackEnd.Entities.Auth;
 using BackEnd.Services.Interfaces.Auth;
+using Microsoft.AspNetCore.Identity.Data;
+using BackEnd.Data;
 
 namespace BackEnd.Services.Implementation.Auth
 {
@@ -21,7 +23,7 @@ namespace BackEnd.Services.Implementation.Auth
             _PasswordHasher = passwordHasher;
         }
 
-        public async Task<LoginResponse> LoginAsync(LoginRequest request)
+        public async Task<LoginResponse> LoginAsync(BackEnd.DTOs.Auth.LoginRequest request)
         {
             // get user
             var user = await _UserRepository.GetByEmailAsync(request.Email);
@@ -41,6 +43,37 @@ namespace BackEnd.Services.Implementation.Auth
             { 
                 Token = token 
             };
+        }
+
+        public async Task<RegisterResponse> RegisterAsync(BackEnd.DTOs.Auth.RegisterRequest request)
+        {
+
+            var _ExistingUser = await _UserRepository.GetByEmailAsync(request.Email);
+
+            if (_ExistingUser != null)
+                throw new InvalidOperationException("Email already in use.");
+
+            var user = new User
+            {
+                Email     = request.Email,
+                Username  = request.Username,
+                Password  = _PasswordHasher.Hash(request.Password),
+                CreatedAt = DateTime.UtcNow,
+                IsActive  = true
+            };
+
+            await _UserRepository.CreateAsync(user);
+
+            var token = _JwtProvider.GenerateToken(user);
+
+            return new RegisterResponse
+            {
+                Token = token,
+                UserID = user.UserID,
+                Username = user.Username,
+                Email = user.Email
+            };
+
         }
     }
 }

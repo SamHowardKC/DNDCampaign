@@ -1,6 +1,6 @@
 ﻿namespace BackEnd.DTOs.Auth
 {
-    public class LoginResponse
+    public class RegisterResponse
     {
         public string Token { get; set; } = default!;
         public string Email { get; set; } = default!;

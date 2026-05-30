@@ -2,6 +2,7 @@
 using BackEnd.Services.Interfaces.Auth;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Superpower.Parsers;
 
 namespace BackEnd.Controllers
 {
@@ -21,8 +22,18 @@ namespace BackEnd.Controllers
         {
             var result = await _authService.LoginAsync(request);
 
-            if (!result.Success)
+            if (result.Token == "")
                 return Unauthorized(result);
+
+            return Ok(result);
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] BackEnd.DTOs.Auth.RegisterRequest request)
+        {
+            var result = await _authService.RegisterAsync(request);
+            if (result.Token == "")
+                return BadRequest(result);
 
             return Ok(result);
         }
