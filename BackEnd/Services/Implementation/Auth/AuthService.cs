@@ -27,11 +27,11 @@ namespace BackEnd.Services.Implementation.Auth
         {
             // get user
             var user = await _UserRepository.GetByEmailAsync(request.Email);
-            if (user == null || !_PasswordHasher.Verify(user.Password, request.Password))
+            if (user == null)
                 throw new UnauthorizedAccessException("Invalid email or password.");
 
             // verify password
-            var ValidPassword = _PasswordHasher.Verify(user.Password, request.Password);
+            var ValidPassword = _PasswordHasher.Verify(request.Password, user.Password);
             if (!ValidPassword)
                 throw new UnauthorizedAccessException("Invalid email or password.");
 
