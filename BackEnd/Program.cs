@@ -58,7 +58,10 @@ namespace BackEnd
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
 
             // CORS MUST be here
             app.UseCors("AllowFrontend");
