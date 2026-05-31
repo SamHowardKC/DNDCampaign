@@ -17,12 +17,13 @@ namespace BackEnd
     {
         public static void Main(string[] args)
         {
-            
-            // Load environment variables from .env
-            Env.Load();
 
             var builder = WebApplication.CreateBuilder(args);
 
+            // Load environment variables
+            Env.Load();
+
+            // CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend", policy =>
@@ -33,28 +34,24 @@ namespace BackEnd
                 });
             });
 
-            // register DbContext
+            // DbContext
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(Environment.GetEnvironmentVariable("SUPABASE_CONNECTION_STRING")));
 
-            // register services
+            // Services
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IJwtProvider, JwtProvider>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
-            // add controllers
+            // Controllers + Swagger
             builder.Services.AddControllers();
-
-            // add swagger support
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            app.UseCors("AllowFrontend");
-
-            // Enable Swagger only in development
+            // Swagger
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -62,10 +59,17 @@ namespace BackEnd
             }
 
             app.UseHttpsRedirection();
+
+            // CORS MUST be here
+            app.UseCors("AllowFrontend");
+
             app.UseAuthorization();
+
             app.MapControllers();
+
             app.Run();
-            
+
+
         }
     }
 }
