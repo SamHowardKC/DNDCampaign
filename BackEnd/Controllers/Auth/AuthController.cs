@@ -3,6 +3,7 @@ using BackEnd.Services.Interfaces.Auth;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Superpower.Parsers;
+using BackEnd.ErrorHandling;
 
 namespace BackEnd.Controllers
 {
@@ -22,20 +23,33 @@ namespace BackEnd.Controllers
         {
             var result = await _authService.LoginAsync(request);
 
-            if (result.Token == "")
-                return Unauthorized(result);
+            if (!result.Success)
+            {
+                return Problem(
+                    title: "Login failed",
+                    detail: result.Error,
+                    statusCode: StatusCodes.Status401Unauthorized
+                );
+            }
 
-            return Ok(result);
+            return Ok(result.Data);
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] BackEnd.DTOs.Auth.RegisterRequest request)
+        public async Task<IActionResult> Register(BackEnd.DTOs.Auth.RegisterRequest request)
         {
             var result = await _authService.RegisterAsync(request);
-            if (result.Token == "")
-                return BadRequest(result);
 
-            return Ok(result);
+            if (!result.Success)
+            {
+                return Problem(
+                    title: "Registration failed",
+                    detail: result.Error,
+                    statusCode: StatusCodes.Status400BadRequest
+                );
+            }
+            return Ok(result.Data);
         }
+
     }
 }

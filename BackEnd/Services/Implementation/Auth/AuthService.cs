@@ -1,79 +1,81 @@
-﻿using Microsoft.AspNetCore.Identity;
-using BackEnd.DTOs.Auth;
+﻿using BackEnd.DTOs.Auth;
 using BackEnd.Entities.Auth;
+using BackEnd.ErrorHandling; // <-- This is where Result<T> should live
+using BackEnd.Services.Implementation.Auth;
 using BackEnd.Services.Interfaces.Auth;
-using Microsoft.AspNetCore.Identity.Data;
-using BackEnd.Data;
 
 namespace BackEnd.Services.Implementation.Auth
 {
     public class AuthService : IAuthService
     {
-        private readonly IUserRepository _UserRepository;
-        private readonly IJwtProvider _JwtProvider;
-        private readonly IPasswordHasher _PasswordHasher;
+        private readonly IUserRepository _userRepository;
+        private readonly IJwtProvider _jwtProvider;
+        private readonly IPasswordHasher _passwordHasher;
 
         public AuthService(
-            IUserRepository userRepository, 
-            IJwtProvider jwtProvider, 
+            IUserRepository userRepository,
+            IJwtProvider jwtProvider,
             IPasswordHasher passwordHasher)
         {
-            _UserRepository = userRepository;
-            _JwtProvider = jwtProvider;
-            _PasswordHasher = passwordHasher;
+            _userRepository = userRepository;
+            _jwtProvider = jwtProvider;
+            _passwordHasher = passwordHasher;
         }
 
-        public async Task<LoginResponse> LoginAsync(BackEnd.DTOs.Auth.LoginRequest request)
+
+        public async Task<Result<LoginResponse>> LoginAsync(LoginRequest request)
         {
             // get user
-            var user = await _UserRepository.GetByEmailAsync(request.Email);
+            var user = await _userRepository.GetByEmailAsync(request.Email);
             if (user == null)
-                throw new UnauthorizedAccessException("Invalid email or password.");
+                return Result<LoginResponse>.Fail("Invalid email or password.");
 
             // verify password
-            var ValidPassword = _PasswordHasher.Verify(request.Password, user.Password);
-            if (!ValidPassword)
-                throw new UnauthorizedAccessException("Invalid email or password.");
+            bool validPassword = _passwordHasher.Verify(request.Password, user.Password);
+            if (!validPassword)
+                return Result<LoginResponse>.Fail("Invalid email or password.");
 
             // generate jwt
-            var token = _JwtProvider.GenerateToken(user);
+            var token = _jwtProvider.GenerateToken(user);
 
-            // return response
-            return new LoginResponse 
-            { 
-                Token = token 
-            };
-        }
-
-        public async Task<RegisterResponse> RegisterAsync(BackEnd.DTOs.Auth.RegisterRequest request)
-        {
-
-            var _ExistingUser = await _UserRepository.GetByEmailAsync(request.Email);
-
-            if (_ExistingUser != null)
-                throw new InvalidOperationException("Email already in use.");
-
-            var user = new User
-            {
-                Email     = request.Email,
-                Username  = request.Username,
-                Password  = _PasswordHasher.Hash(request.Password),
-                CreatedAt = DateTime.UtcNow,
-                IsActive  = true
-            };
-
-            await _UserRepository.CreateAsync(user);
-
-            var token = _JwtProvider.GenerateToken(user);
-
-            return new RegisterResponse
+            var response = new LoginResponse
             {
                 Token = token,
                 UserID = user.UserID,
-                Username = user.Username,
-                Email = user.Email
+                Username = user.Username
             };
 
+            return Result<LoginResponse>.Ok(response);
+        }
+
+        public async Task<Result<RegisterResponse>> RegisterAsync(RegisterRequest request)
+        {
+            var existingUser = await _userRepository.GetByEmailAsync(request.Email);
+
+            if (existingUser != null)
+                return Result<RegisterResponse>.Fail("Email already in use.");
+
+            var user = new User
+            {
+                Email = request.Email,
+                Username = request.Username,
+                Password = _passwordHasher.Hash(request.Password),
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            };
+
+            await _userRepository.CreateAsync(user);
+
+            var token = _jwtProvider.GenerateToken(user);
+
+            var response = new RegisterResponse
+            {
+                Token = token,
+                UserID = user.UserID,
+                Username = user.Username
+            };
+
+            return Result<RegisterResponse>.Ok(response);
         }
     }
 }

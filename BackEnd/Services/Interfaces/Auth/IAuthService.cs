@@ -1,11 +1,12 @@
 ﻿using BackEnd.DTOs.Auth;
+using BackEnd.ErrorHandling;
 
 namespace BackEnd.Services.Interfaces.Auth
 {
     public interface IAuthService
     {
-        Task<LoginResponse> LoginAsync(LoginRequest request);
+        Task<Result<LoginResponse>> LoginAsync(LoginRequest request);
+        Task<Result<RegisterResponse>> RegisterAsync(RegisterRequest request);
 
-        Task<RegisterResponse> RegisterAsync(RegisterRequest request);
     }
 }

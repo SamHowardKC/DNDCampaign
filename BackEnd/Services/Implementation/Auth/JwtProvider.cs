@@ -10,16 +10,16 @@ namespace BackEnd.Services.Implementation.Auth
 {
     public class JwtProvider : IJwtProvider
     {
-        private readonly IConfiguration _Config;
+        private readonly IConfiguration _config;
 
         public JwtProvider(IConfiguration config)
         {
-            _Config = config;
+            _config = config;
         }
 
         public string GenerateToken(User user)
         {
-            var keyString = _Config["Jwt:Key"];
+            var keyString = _config["Jwt:Key"];
 
             if (string.IsNullOrEmpty(keyString))
                 throw new Exception("JWT Key is missing from configuration.");
@@ -36,8 +36,8 @@ namespace BackEnd.Services.Implementation.Auth
             };
 
             var token = new JwtSecurityToken(
-                issuer: _Config["Jwt:Issuer"],
-                audience: _Config["Jwt:Audience"],
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
                 claims: Claims,
                 expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: creds
