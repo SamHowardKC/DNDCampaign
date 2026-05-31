@@ -1,4 +1,5 @@
 import React, { useState} from "react";
+import type { AuthResponse, ResultInterface } from "./Interfaces";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -17,15 +18,15 @@ export default function Login() {
             body: JSON.stringify({ email, password })
             });
 
-            const result = await response.json();
+            const result: ResultInterface<AuthResponse> = await response.json();
 
             // Handle backend failure
             if (!response.ok || !result.success) {
-            throw new Error(result.error ?? "Login failed");
+            throw new Error(result.Error ?? "Login failed");
             }
 
             // Success
-            localStorage.setItem("token", result.data.token);
+            localStorage.setItem("token", result.Data.Token);
             console.log("Logged in");
         }
         catch (err) {
@@ -116,15 +117,3 @@ const styles: { [key: string]: React.CSSProperties } = {
         cursor: "pointer",
     },
 };
-
-export interface LoginResponse {
-  Token: string;
-  UserID: string;
-  Username: string;
-}
-
-export interface Result<T> {
-  success: boolean;
-  Error: string | null;
-  Data: T;
-}
