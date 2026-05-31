@@ -5,20 +5,21 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [token, setToken] = useState("");
 
     const Authenticate = async () => {
         setLoading(true);
         setError("");
 
         try {
-            //test call, will replace later
             const response = await fetch(
-                "https://dndcampaign.onrender.com/api/health/health",
+                "https://dndcampaign.onrender.com/api/auth/login",
                 {
-                    method: "GET",
+                    method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
+                    body: JSON.stringify({ email, password })
                 }
             );
         
@@ -27,8 +28,10 @@ export default function Login() {
             }
             
             const data = await response.json();
-            console.log("Logged in", data);
-            // Simulate successful login
+            setToken(data.token);
+            localStorage.setItem("token", data.token);
+
+            console.log("Logged in");
         }
         catch (err: unknown) {
             if (err instanceof Error) {
