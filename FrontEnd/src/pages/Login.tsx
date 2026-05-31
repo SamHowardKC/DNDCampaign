@@ -11,36 +11,35 @@ export default function Login() {
         setError("");
 
         try {
-            const response = await fetch(
-                "https://dndcampaign.onrender.com/api/auth/login",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ email, password })
-                }
-            );
-        
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            
-            const data = await response.json();
-            localStorage.setItem("token", data.token);
+            const response = await fetch("https://localhost:7228/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+            });
 
+            const result = await response.json();
+
+            // Handle backend failure
+            if (!response.ok || !result.success) {
+            throw new Error(result.error ?? "Login failed");
+            }
+
+            // Success
+            localStorage.setItem("token", result.data.token);
             console.log("Logged in");
         }
-        catch (err: unknown) {
+        catch (err) {
             if (err instanceof Error) {
-                setError(err.message);
+            setError(err.message); // <-- shows backend error
             } else {
-                setError("An unknown error occurred");
+            setError("An unknown error occurred");
             }
-        } finally {
+        }
+        finally {
             setLoading(false);
         }
     };
+
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -117,3 +116,15 @@ const styles: { [key: string]: React.CSSProperties } = {
         cursor: "pointer",
     },
 };
+
+export interface LoginResponse {
+  Token: string;
+  UserID: string;
+  Username: string;
+}
+
+export interface Result<T> {
+  success: boolean;
+  Error: string | null;
+  Data: T;
+}

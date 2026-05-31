@@ -24,13 +24,7 @@ namespace BackEnd.Controllers
             var result = await _authService.LoginAsync(request);
 
             if (!result.Success)
-            {
-                return Problem(
-                    title: "Login failed",
-                    detail: result.Error,
-                    statusCode: StatusCodes.Status401Unauthorized
-                );
-            }
+                return BadRequest(result);
 
             return Ok(result.Data);
         }
@@ -41,13 +35,8 @@ namespace BackEnd.Controllers
             var result = await _authService.RegisterAsync(request);
 
             if (!result.Success)
-            {
-                return Problem(
-                    title: "Registration failed",
-                    detail: result.Error,
-                    statusCode: StatusCodes.Status400BadRequest
-                );
-            }
+                return BadRequest(result);
+
             return Ok(result.Data);
         }
 
