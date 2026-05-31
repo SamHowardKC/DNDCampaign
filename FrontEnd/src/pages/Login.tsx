@@ -5,7 +5,6 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [token, setToken] = useState("");
 
     const Authenticate = async () => {
         setLoading(true);
@@ -28,7 +27,6 @@ export default function Login() {
             }
             
             const data = await response.json();
-            setToken(data.token);
             localStorage.setItem("token", data.token);
 
             console.log("Logged in");
