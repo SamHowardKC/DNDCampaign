@@ -2,13 +2,14 @@ import React, { useState} from "react";
 import type { AuthResponse } from "../../interfaces/auth/AuthInterfaces";
 import type { ResultInterface } from "../../interfaces/Result";
 import { styles } from "../../styles/auth/AuthStyle";
-
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     const Authenticate = async () => {
         setLoading(true);
@@ -78,6 +79,18 @@ export default function Login() {
 
                 <button type="submit" style={styles.button} disabled={loading}>
                     {loading ? "Logging in..." : "Login"}
+                </button>
+
+                <p style={{ marginTop: "12px" }}>
+                    Don’t have an account? <Link to="/register">Register</Link>
+                </p>
+
+                <button
+                    type="button"
+                    style={{ ...styles.button, backgroundColor: "#28a745" }}
+                    onClick={() => navigate("/register")}
+                >
+                    Create an Account
                 </button>
             </form>
         </div>
