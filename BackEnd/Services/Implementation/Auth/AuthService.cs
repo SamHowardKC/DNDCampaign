@@ -23,37 +23,37 @@ namespace BackEnd.Services.Implementation.Auth
         }
 
 
-        public async Task<Result<LoginResponse>> LoginAsync(LoginRequest request)
+        public async Task<Result<AuthResponse>> LoginAsync(LoginRequest request)
         {
             // get user
             var user = await _userRepository.GetByEmailAsync(request.Email);
             if (user == null)
-                return Result<LoginResponse>.Fail("Invalid email or password.");
+                return Result<AuthResponse>.Fail("Invalid email or password.");
 
             // verify password
             bool validPassword = _passwordHasher.Verify(request.Password, user.Password);
             if (!validPassword)
-                return Result<LoginResponse>.Fail("Invalid email or password.");
+                return Result<AuthResponse>.Fail("Invalid email or password.");
 
             // generate jwt
             var token = _jwtProvider.GenerateToken(user);
 
-            var response = new LoginResponse
+            var response = new AuthResponse
             {
                 Token = token,
                 UserID = user.UserID,
                 Username = user.Username
             };
 
-            return Result<LoginResponse>.Ok(response);
+            return Result<AuthResponse>.Ok(response);
         }
 
-        public async Task<Result<RegisterResponse>> RegisterAsync(RegisterRequest request)
+        public async Task<Result<AuthResponse>> RegisterAsync(RegisterRequest request)
         {
             var existingUser = await _userRepository.GetByEmailAsync(request.Email);
 
             if (existingUser != null)
-                return Result<RegisterResponse>.Fail("Email already in use.");
+                return Result<AuthResponse>.Fail("Email already in use.");
 
             var user = new User
             {
@@ -68,14 +68,14 @@ namespace BackEnd.Services.Implementation.Auth
 
             var token = _jwtProvider.GenerateToken(user);
 
-            var response = new RegisterResponse
+            var response = new AuthResponse
             {
                 Token = token,
                 UserID = user.UserID,
                 Username = user.Username
             };
 
-            return Result<RegisterResponse>.Ok(response);
+            return Result<AuthResponse>.Ok(response);
         }
     }
 }

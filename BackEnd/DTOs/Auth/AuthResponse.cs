@@ -2,7 +2,7 @@
 
 namespace BackEnd.DTOs.Auth
 {
-    public class RegisterResponse
+    public class AuthResponse
     {
         public string Token { get; set; } = default!;
         public Guid UserID { get; set; } = default!;

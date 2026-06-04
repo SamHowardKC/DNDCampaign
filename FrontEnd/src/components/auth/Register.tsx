@@ -31,30 +31,30 @@ export default function Register() {
 
             const result: ApiResponse<AuthResponse> = await response.json();
 
-            // 1. FluentValidation error
+            // FluentValidation error
             if ("errors" in result) {
                 const firstKey = Object.keys(result.errors)[0];
                 throw new Error(result.errors[firstKey][0]);
             }
 
-            // 2. Business logic error (Result<T>)
+            // Business logic error (Result<T>)
             if ("success" in result && result.success === false) {
                 throw new Error(result.error ?? "Registration failed");
             }
 
-            // 3. Success response (token, userID, username)
+            // Success response (token, userID, username)
             if ("userID" in result) {
                 console.log("Registration successful:", result);
                 return; // or navigate, or store token
             }
 
-            // 4. Fallback (should never happen)
+            // Fallback (should never happen)
             throw new Error("Unexpected server response");
         } 
         
         catch (err) {
             if (err instanceof Error) {
-            setError(err.message); // <-- shows backend error
+            setError(err.message); // shows backend error
             } else {
             setError("An unknown error occurred");
             }

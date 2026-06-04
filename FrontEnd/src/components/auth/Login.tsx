@@ -37,7 +37,7 @@ export default function Login() {
         }
         catch (err) {
             if (err instanceof Error) {
-            setError(err.message); // <-- shows backend error
+            setError(err.message); // shows backend error
             } else {
             setError("An unknown error occurred");
             }
