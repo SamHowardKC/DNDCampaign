@@ -31,7 +31,8 @@ namespace BackEnd
             {
                 options.AddPolicy("AllowFrontend", policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173")
+                    policy.WithOrigins("http://localhost:5173",               
+                                        "https://dnd-campaign-wine.vercel.app")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();
