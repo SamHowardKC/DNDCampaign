@@ -1,4 +1,4 @@
-export function CheckPasswordStrength(password: string): {
+export function CheckPasswordStrength(password: string, confirmpassword: string): {
     isStrong: boolean;
     message: string;
 } {
@@ -24,57 +24,37 @@ export function CheckPasswordStrength(password: string): {
         return { isStrong: false, message: "Password must contain a special character." };
     }
 
+    if (confirmpassword.length === 0)
+        return { isStrong: false, message: "Please confirm your password." };
+
+    if (password !== confirmpassword)
+        return { isStrong: false, message: "Passwords do not match." };
+
     return { isStrong: true , message: "" };
 }
 
-// I included this so it (as closely as I can) matches the .net email validation rules"
-export function CheckEmailFormat(email: string): {
+export function CheckEmailFormat(email: string) {
+    if (!email)
+        return { isValid: false, message: "Email is required." };
+
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!regex.test(email))
+        return { isValid: false, message: "Invalid email format." };
+
+    return { isValid: true, message: "" };
+}
+
+export function CheckUsername (username: string): {
     isValid: boolean;
     message: string;
 } {
-
-    if (email.length > 254) {
-        return { isValid: false, message: "Email cannot be longer than 254 characters." };
-    }
-
-    if (email.includes(" ")) {
-        return { isValid: false, message: "Email cannot contain spaces." };
-    }
-
-    const parts = email.split("@");
-    if (parts.length !== 2) {
-        return { isValid: false, message: "Email must contain exactly one '@' symbol." };
-    }
-
-    const [local,domain] = parts;
-    
-    //local rules
-    if (local.length === 0 || !local) return { isValid: false, message: "Email local part cannot be empty." };
-    if (local.startsWith(".") || local.endsWith(".")) return { isValid: false, message: "Email local part cannot start or end with a period." };
-    if (local.includes("..")) return { isValid: false, message: "Email local part cannot contain consecutive periods." };
-
-    // domain rules
-    if (domain.length === 0 || !domain) return { isValid: false, message: "Email domain part cannot be empty." };
-    if (domain.startsWith("-") || domain.endsWith("-")) return { isValid: false, message: "Email domain part cannot start or end with a hyphen." };
-    if (!domain.includes(".")) return { isValid: false, message: "Email domain part must contain at least one period." };
-    if (domain.includes("..")) return { isValid: false, message: "Email domain part cannot contain consecutive periods." };
-
-    const illegal = /[(),:;<>[\]\s]/;
-    if (illegal.test(local) && !(local.startsWith('"') && local.endsWith('"'))) {
-        return { isValid: false, message: "Email contains illegal characters." };
-    }
-
-    // domain labels rules
-    const labels = domain.split(".");
-    for (const label of labels) {
-        if (!label) return { isValid: false, message: "Email domain part contains an empty label." };
-        if (label.startsWith("-") || label.endsWith("-")) return { isValid: false, message: "Email domain part cannot contain labels that start or end with a hyphen." };
-    }
-
-    // TLD must be at least 2 chars
-    const tld = labels[labels.length - 1];
-    if (tld.length < 2) return { isValid: false, message: "Email domain part must have a valid top-level domain." };
-    
+    if (username.length === 0)
+        return { isValid: false, message: "Username cannot be empty." };
+    if (username.length > 50)
+        return { isValid: false, message: "Username cannot be longer than 50 characters." };
+    if (username.length < 3)
+        return { isValid: false, message: "Username must be at least 3 characters long." };
 
     return { isValid: true, message: "" };
 }

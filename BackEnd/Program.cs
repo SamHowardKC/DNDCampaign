@@ -1,8 +1,11 @@
 
 using BackEnd.Data;
+using BackEnd.DTOs.Auth;
 using BackEnd.Services.Implementation.Auth;
 using BackEnd.Services.Interfaces.Auth;
 using DotNetEnv;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +36,11 @@ namespace BackEnd
                           .AllowAnyMethod();
                 });
             });
+
+            // Validators
+            builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+            builder.Services.AddFluentValidationAutoValidation();
+
 
             // DbContext
             builder.Services.AddDbContext<AppDbContext>(options =>
