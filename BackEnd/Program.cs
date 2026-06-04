@@ -1,9 +1,18 @@
 
-using Npgsql;
+using BackEnd.Data;
+using BackEnd.DTOs.Auth;
+using BackEnd.Services.Implementation.Auth;
+using BackEnd.Services.Interfaces.Auth;
 using DotNetEnv;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Npgsql;
 using Swashbuckle.AspNetCore.SwaggerGen;
+
 
 namespace BackEnd
 {
@@ -11,33 +20,68 @@ namespace BackEnd
     {
         public static void Main(string[] args)
         {
+
+            var builder = WebApplication.CreateBuilder(args);
+
+            // Load environment variables
+            Env.Load();
+
+            // CORS
+            builder.Services.AddCors(options =>
             {
-                // Load environment variables from .env
-                Env.Load();
-
-                var builder = WebApplication.CreateBuilder(args);
-
-                // Add services to the container
-                builder.Services.AddControllers();
-
-                // Add Swagger support (works with .NET 8)
-                builder.Services.AddEndpointsApiExplorer();
-                builder.Services.AddSwaggerGen();
-
-                var app = builder.Build();
-
-                // Enable Swagger only in development
-                if (app.Environment.IsDevelopment())
+                options.AddPolicy("AllowFrontend", policy =>
                 {
-                    app.UseSwagger();
-                    app.UseSwaggerUI();
-                }
+                    policy.WithOrigins("http://localhost:5173")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
+            });
 
-                app.UseHttpsRedirection();
-                app.UseAuthorization();
-                app.MapControllers();
-                app.Run();
+            // Validators
+            builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+            builder.Services.AddFluentValidationAutoValidation();
+
+
+            // DbContext
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseNpgsql(Environment.GetEnvironmentVariable("SUPABASE_CONNECTION_STRING")));
+
+            // Services
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+            // Controllers + Swagger
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            var app = builder.Build();
+
+            // Swagger
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
+
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
+
+            // CORS MUST be here
+            app.UseCors("AllowFrontend");
+
+            app.UseAuthorization();
+
+            app.MapControllers();
+
+            app.Run();
+
+
         }
     }
 }
