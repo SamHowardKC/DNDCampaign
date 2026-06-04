@@ -1,5 +1,6 @@
 # DNDCampaign
 A Dungeons and Dragons campaign tracker. Tracks users, campaigns, and player characters in the campaigns
+The following documentation applies to the MVP (Minimum Viable Product) that will be published. This does not describe the complete product
 
 ## SECURITY NOTICE
 This project is not intended for production use without additional hardening.  
