@@ -26,11 +26,11 @@ export default function Login() {
 
             // Handle backend failure
             if (!response.ok || !result.success) {
-            throw new Error(result.Error ?? "Login failed");
+            throw new Error(result.error ?? "Login failed");
             }
 
             // Success
-            localStorage.setItem("token", result.Data.Token);
+            localStorage.setItem("token", result.data.Token);
             console.log("Logged in");
         }
         catch (err) {

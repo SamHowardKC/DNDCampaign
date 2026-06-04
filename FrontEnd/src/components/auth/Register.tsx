@@ -1,6 +1,6 @@
 import React, { useState} from "react";
 import type { AuthResponse } from "../../interfaces/auth/AuthInterfaces";
-import type { ResultInterface } from "../../interfaces/Result";
+import type { ApiResponse } from "../../interfaces/Result";
 import { CheckEmailFormat, CheckUsername, CheckPasswordStrength } from "../../validation/auth/AuthValidation";
 import { styles } from "../../styles/auth/AuthStyle";
 
@@ -28,12 +28,29 @@ export default function Register() {
             body: JSON.stringify({ email, password, username, confirmPassword })
             });
 
-            const result: ResultInterface<AuthResponse> = await response.json();
+            const result: ApiResponse<AuthResponse> = await response.json();
 
-            // Handle backend failure
-            if (!response.ok || !result.success) {
-                throw new Error(result.Error ?? "Registration failed");
+            // 1. FluentValidation error
+            if ("errors" in result) {
+                const firstKey = Object.keys(result.errors)[0];
+                throw new Error(result.errors[firstKey][0]);
             }
+
+            // 2. Business logic error (Result<T>)
+            if ("success" in result && result.success === false) {
+                throw new Error(result.error ?? "Registration failed");
+            }
+
+            // 3. Success response (token, userID, username)
+            if ("token" in result) {
+                console.log("Registration successful:", result);
+                return; // or navigate, or store token
+            }
+
+            // 4. Fallback (should never happen)
+            throw new Error("Unexpected server response");
+            
+            console.log("Registered successfully");
         } 
         
         catch (err) {
