@@ -22,7 +22,7 @@ export default function Register() {
         }
 
         try {
-            const response = await fetch("https://localhost:7228/api/auth/register", {
+            const response = await fetch("https://dndcampaign.onrender.com/api/auth/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
