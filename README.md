@@ -9,6 +9,7 @@ See the following files for full details
 - [Security](./SECURITY.md)
 - [License](./LICENSE.md)
 - [Contributing](./CONTRIBUTING.md)
+- [Privacy](./PRIVACY.md)
 
 ## TECHNICAL DOCUMENTATION
 - [Tech Stack](./Technical%20Documentation/TECHSTACK.md)
