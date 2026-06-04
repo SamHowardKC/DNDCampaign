@@ -1,9 +1,10 @@
 ﻿using BackEnd.DTOs.Auth;
+using BackEnd.ErrorHandling;
 using BackEnd.Services.Interfaces.Auth;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Superpower.Model;
 using Superpower.Parsers;
-using BackEnd.ErrorHandling;
 
 namespace BackEnd.Controllers
 {
@@ -26,7 +27,23 @@ namespace BackEnd.Controllers
             if (!result.Success)
                 return BadRequest(result);
 
-            return Ok(result.Data);
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,      
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddHours(1),
+                Path = "/"
+            };
+
+            Response.Cookies.Append("jwt", result.Data.Token, cookieOptions);
+
+
+            return Ok(new
+            {
+                userID = result.Data.UserID,
+                username = result.Data.Username
+            });
         }
 
         [HttpPost("register")]
@@ -37,7 +54,23 @@ namespace BackEnd.Controllers
             if (!result.Success)
                 return BadRequest(result);
 
-            return Ok(result.Data);
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,   
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddHours(1),
+                Path = "/"
+            };
+
+            Response.Cookies.Append("jwt", result.Data.Token, cookieOptions);
+
+
+            return Ok(new
+            {
+                userID = result.Data.UserID,
+                username = result.Data.Username
+            });
         }
 
     }

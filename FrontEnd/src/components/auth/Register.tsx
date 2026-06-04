@@ -25,6 +25,7 @@ export default function Register() {
             const response = await fetch("https://localhost:7228/api/auth/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            credentials: "include",
             body: JSON.stringify({ email, password, username, confirmPassword })
             });
 
@@ -42,15 +43,13 @@ export default function Register() {
             }
 
             // 3. Success response (token, userID, username)
-            if ("token" in result) {
+            if ("userID" in result) {
                 console.log("Registration successful:", result);
                 return; // or navigate, or store token
             }
 
             // 4. Fallback (should never happen)
             throw new Error("Unexpected server response");
-            
-            console.log("Registered successfully");
         } 
         
         catch (err) {

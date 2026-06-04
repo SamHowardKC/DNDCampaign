@@ -24,14 +24,16 @@ export default function Login() {
 
             const result: ResultInterface<AuthResponse> = await response.json();
 
-            // Handle backend failure
-            if (!response.ok || !result.success) {
-            throw new Error(result.error ?? "Login failed");
+            // Business logic error (Result<T>)
+            if ("success" in result && result.success === false) {
+                throw new Error(result.error ?? "Login failed");
             }
 
-            // Success
-            localStorage.setItem("token", result.data.Token);
-            console.log("Logged in");
+            // Success response (token, userID, username)
+            if ("userID" in result) {
+                console.log("Login successful:", result);
+                return; // or navigate, or store token
+            }
         }
         catch (err) {
             if (err instanceof Error) {

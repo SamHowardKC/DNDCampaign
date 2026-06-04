@@ -33,7 +33,8 @@ namespace BackEnd
                 {
                     policy.WithOrigins("http://localhost:5173")
                           .AllowAnyHeader()
-                          .AllowAnyMethod();
+                          .AllowAnyMethod()
+                          .AllowCredentials();
                 });
             });
 
