@@ -2,6 +2,11 @@
 A Dungeons and Dragons campaign tracker. Tracks users, campaigns, and player characters in the campaigns
 The following documentation applies to the MVP (Minimum Viable Product) that will be published. This does not describe the complete product
 
+## App
+This is the link to the website :) 
+It is not secure and is a work in progress
+https://dnd-campaign-wine.vercel.app/
+
 ## SECURITY NOTICE
 This project is not intended for production use without additional hardening.  
 Do NOT use any Sensitive Information (For example Usernames or Passwords that are used in other services) in this project
