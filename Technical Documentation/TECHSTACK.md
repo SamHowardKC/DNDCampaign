@@ -4,7 +4,7 @@
 - API Host: Render
 - Language: C#
 - IDE: Visual Studio
-- Database and Entity Relationship Diagram: Supabase 
+- Database: Supabase (I implemented my own business logic and rest endpoints in C#)
 
 ## FRONT END
 - Framework: React 
