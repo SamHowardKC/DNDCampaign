@@ -40,7 +40,7 @@ I do not:
 - Data is stored in a secure database (e.g., Supabase/PostgreSQL).
 - Access to the database is restricted and protected by environment variables.
 
-Despite these measures, my system is NOT perfectly secure.
+While reasonable security measures are in place, this project is not intended for storing sensitive or confidential information.
 This is a personal project provided “as‑is,” and it should not be used to store sensitive or confidential information.
 
 ### Data Retention
