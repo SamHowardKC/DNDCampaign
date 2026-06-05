@@ -1,4 +1,3 @@
-
 using BackEnd.Data;
 using BackEnd.DTOs.Auth;
 using BackEnd.Services.Implementation.Auth;
@@ -6,13 +5,12 @@ using BackEnd.Services.Interfaces.Auth;
 using DotNetEnv;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
-using Npgsql;
-using Swashbuckle.AspNetCore.SwaggerGen;
-
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace BackEnd
 {
@@ -55,6 +53,45 @@ namespace BackEnd
             builder.Services.AddScoped<IJwtProvider, JwtProvider>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
+            // JWT Authentication (reads token from HttpOnly cookie)
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        // Read JWT from cookie instead of Authorization header
+                        if (context.Request.Cookies.ContainsKey("jwt"))
+                        {
+                            context.Token = context.Request.Cookies["jwt"];
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
+
+                var jwtKey = builder.Configuration["Jwt:Key"]
+                    ?? throw new InvalidOperationException("JWT Key is missing from configuration.");
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(jwtKey)
+                    )
+                };
+            });
+
             // Controllers + Swagger
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -74,16 +111,15 @@ namespace BackEnd
                 app.UseHttpsRedirection();
             }
 
-            // CORS MUST be here
             app.UseCors("AllowFrontend");
 
+            // Authentication + Authorization
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
 
             app.Run();
-
-
         }
     }
 }

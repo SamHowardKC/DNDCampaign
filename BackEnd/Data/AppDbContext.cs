@@ -1,4 +1,5 @@
 ﻿using BackEnd.Entities.Auth;
+using BackEnd.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackEnd.Data
@@ -11,5 +12,6 @@ namespace BackEnd.Data
         }
 
         public DbSet<User> User { get; set; }
+        public DbSet<Campaign> Campaign { get; set; }
     }
 }
