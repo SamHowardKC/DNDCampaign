@@ -2,7 +2,7 @@
 {
     public class CharacterClass 
     {
-        public Guid ClassID = Guid.NewGuid();
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string ClassName { get; set; } = default!;
         public int MaxHPIncrease { get; set; } = default!;
     }

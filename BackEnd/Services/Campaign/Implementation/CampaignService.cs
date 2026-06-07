@@ -40,12 +40,13 @@ namespace BackEnd.Services.Campaign.Implementation
             {
                 Campaigns = CampaignList.Select(c => new CampaignListItem
                 {
-                    CampaignID = c.Id,
+                    Id = c.Id,
                     CampaignName = c.CampaignName,
                     DungeonMasterID = c.DungeonMasterID,
                     IsActive = c.IsActive,
                     IsEnded = c.IsEnded,
-                    CreatedAt = c.CreatedAt
+                    CreatedAt = c.CreatedAt,
+                    IsDungeonMaster = c.DungeonMasterID == userID
                 }).ToList()
             };
 

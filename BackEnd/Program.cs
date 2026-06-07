@@ -4,6 +4,8 @@ using BackEnd.Services.Auth.Implementation;
 using BackEnd.Services.Auth.Interface;
 using BackEnd.Services.Campaign.Implementation;
 using BackEnd.Services.Campaign.Interface;
+using BackEnd.Services.Character.Implementation;
+using BackEnd.Services.Character.Interface;
 using DotNetEnv;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -57,6 +59,7 @@ namespace BackEnd
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<ICampaignRepository, CampaignRepository>();
             builder.Services.AddScoped<ICampaignService, CampaignService>();
+            builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 

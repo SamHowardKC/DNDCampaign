@@ -12,6 +12,13 @@ namespace BackEnd.Data
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<CharacterCampaign>()
+                .HasKey(cc => new { cc.CharacterID, cc.CampaignID });
+
+            base.OnModelCreating(modelBuilder);
+        }
         public DbSet<User> User { get; set; }
         public DbSet<Campaign> Campaign { get; set; }
         public DbSet<CharacterCampaign> CharacterCampaign { get; set; }
