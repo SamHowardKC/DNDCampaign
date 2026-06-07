@@ -1,4 +1,4 @@
-﻿namespace BackEnd.DTOs.Dashboard
+﻿namespace BackEnd.DTOs.Campaign
 {
     public class CharacterListResponse
     {

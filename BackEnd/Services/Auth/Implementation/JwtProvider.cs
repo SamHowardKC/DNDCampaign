@@ -2,11 +2,11 @@
 using System.Security.Claims;
 using System.Text;
 using BackEnd.Entities.Auth;
-using BackEnd.Services.Interfaces.Auth;
+using BackEnd.Services.Auth.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BackEnd.Services.Implementation.Auth
+namespace BackEnd.Services.Auth.Implementation
 {
     public class JwtProvider : IJwtProvider
     {
@@ -28,17 +28,16 @@ namespace BackEnd.Services.Implementation.Auth
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var Claims = new[]
+            var claims = new[]
             {
-                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                 new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
-                claims: Claims,
+                claims: claims,
                 expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: creds
             );

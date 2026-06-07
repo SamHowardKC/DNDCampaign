@@ -1,9 +1,9 @@
 ﻿using BackEnd.Data;
 using BackEnd.Entities.Auth;
+using BackEnd.Services.Auth.Interface;
 using Microsoft.EntityFrameworkCore;
-using BackEnd.Services.Interfaces.Auth;
 
-namespace BackEnd.Services.Implementation.Auth
+namespace BackEnd.Services.Auth.Implementation
 {
     public class UserRepository : IUserRepository
     {

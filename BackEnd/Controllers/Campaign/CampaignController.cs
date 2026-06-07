@@ -1,0 +1,45 @@
+﻿using BackEnd.DTOs.Campaign;
+using BackEnd.ErrorHandling;
+using BackEnd.Services.Campaign.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Mvc;
+using Superpower.Model;
+using Superpower.Parsers;
+using System.Security.Claims;
+
+namespace BackEnd.Controllers.Campaign
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class CampaignController : ControllerBase
+    {
+        private readonly ICampaignService _campaignService;
+
+        public CampaignController(ICampaignService campaignService)
+        {
+            _campaignService = campaignService;
+        }
+
+        // GET: api/campaign/user
+        [Authorize]
+        [HttpGet("user")]
+        public async Task<IActionResult> GetCampaignsForUser()
+        {
+            var userIdClaim = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+
+            if (userIdClaim == null)
+                return Unauthorized(BackEnd.ErrorHandling.Result<CampaignListResponse>.Fail("User ID not found in token"));
+
+            var userId = Guid.Parse(userIdClaim);
+
+            var result = await _campaignService.GetCampaignsForUserAsync(userId);
+
+            if (!result.Success)
+                return NotFound(result);
+
+            return Ok(result);
+        }
+
+    }
+}

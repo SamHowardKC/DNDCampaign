@@ -1,12 +1,12 @@
 ﻿using BackEnd.DTOs.Auth;
 using BackEnd.ErrorHandling;
-using BackEnd.Services.Interfaces.Auth;
+using BackEnd.Services.Auth;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Superpower.Model;
 using Superpower.Parsers;
 
-namespace BackEnd.Controllers
+namespace BackEnd.Controllers.Auth
 {
     [ApiController]
     [Route("api/[controller]")]

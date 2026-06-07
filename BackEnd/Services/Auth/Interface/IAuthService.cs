@@ -1,7 +1,7 @@
 ﻿using BackEnd.DTOs.Auth;
 using BackEnd.ErrorHandling;
 
-namespace BackEnd.Services.Interfaces.Auth
+namespace BackEnd.Services.Auth.Interface
 {
     public interface IAuthService
     {

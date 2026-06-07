@@ -1,7 +1,7 @@
-﻿using BCrypt.Net;
-using BackEnd.Services.Interfaces.Auth;
+﻿using BackEnd.Services.Auth.Interface;
+using BCrypt.Net;
 
-namespace BackEnd.Services.Implementation.Auth
+namespace BackEnd.Services.Auth.Implementation
 {
     public class PasswordHasher : IPasswordHasher
     {

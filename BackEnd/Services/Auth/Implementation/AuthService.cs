@@ -1,11 +1,10 @@
 ﻿using BackEnd.DTOs.Auth;
 using BackEnd.Entities.Auth;
 using BackEnd.ErrorHandling; // <-- This is where Result<T> should live
-using BackEnd.Services.Implementation.Auth;
-using BackEnd.Services.Interfaces.Auth;
+using BackEnd.Services.Auth.Interface;
 using Microsoft.AspNetCore.Components.Forms;
 
-namespace BackEnd.Services.Implementation.Auth
+namespace BackEnd.Services.Auth.Implementation
 {
     public class AuthService : IAuthService
     {

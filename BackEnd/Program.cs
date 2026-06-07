@@ -1,7 +1,9 @@
 using BackEnd.Data;
 using BackEnd.DTOs.Auth;
-using BackEnd.Services.Implementation.Auth;
-using BackEnd.Services.Interfaces.Auth;
+using BackEnd.Services.Auth.Implementation;
+using BackEnd.Services.Auth.Interface;
+using BackEnd.Services.Campaign.Implementation;
+using BackEnd.Services.Campaign.Interface;
 using DotNetEnv;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -10,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 namespace BackEnd
@@ -52,6 +55,10 @@ namespace BackEnd
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IJwtProvider, JwtProvider>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+            builder.Services.AddScoped<ICampaignRepository, CampaignRepository>();
+            builder.Services.AddScoped<ICampaignService, CampaignService>();
+
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             // JWT Authentication (reads token from HttpOnly cookie)
             builder.Services.AddAuthentication(options =>
