@@ -40,7 +40,7 @@ namespace BackEnd.Services.Auth.Implementation
             var response = new AuthResponse
             {
                 Token = token,
-                UserID = user.UserID,
+                UserID = user.Id,
                 Username = user.Username
             };
 
@@ -70,7 +70,7 @@ namespace BackEnd.Services.Auth.Implementation
             var response = new AuthResponse
             {
                 Token = token,
-                UserID = user.UserID,
+                UserID = user.Id,
                 Username = user.Username
             };
 

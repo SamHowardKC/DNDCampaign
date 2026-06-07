@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="obj\" />
+    <Folder Include="Services\Character\Implementation\" />
   </ItemGroup>
 
 </Project>

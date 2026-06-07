@@ -26,9 +26,9 @@ namespace BackEnd.Services.Campaign.Implementation
                 return Result<CampaignListResponse>.Fail("No campaigns found for the user.");
             }
 
-            /*var response = new CampaignListResponse
+            var response = new CampaignListResponse
             {
-                Campaigns = CampaignList.Select(c => new CampaignListItem
+                /*Campaigns = CampaignList.Select(c => new CampaignListItem
                 {
                     CampaignID = c.CampaignID,
                     CampaignName = c.CampaignName,
@@ -36,8 +36,8 @@ namespace BackEnd.Services.Campaign.Implementation
                     IsActive = c.IsActive,
                     IsEnded = c.IsEnded,
                     CreatedAt = c.CreatedAt
-                }).ToList()
-            };*/
+                }).ToList()*/
+            };
 
             return Result<CampaignListResponse>.Ok(response);
         }
