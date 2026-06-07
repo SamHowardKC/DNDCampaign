@@ -1,6 +1,6 @@
 ﻿using BackEnd.DTOs.Auth;
 using BackEnd.ErrorHandling;
-using BackEnd.Services.Auth;
+using BackEnd.Services.Auth.Interface;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Superpower.Model;
