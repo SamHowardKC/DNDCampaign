@@ -41,5 +41,24 @@ namespace BackEnd.Controllers.Campaign
             return Ok(result);
         }
 
+        [Authorize]
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateCampaign(CreateCampaignRequest request)
+        {
+            var userIdClaim = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+
+            if (userIdClaim == null)
+                return Unauthorized(BackEnd.ErrorHandling.Result<CampaignListResponse>.Fail("User ID not found in token"));
+
+            var userId = Guid.Parse(userIdClaim);
+
+            var result = await _campaignService.CreateCampaignAsync(request, userId);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
     }
 }

@@ -6,5 +6,6 @@ namespace BackEnd.Services.Campaign.Interface
     public interface ICampaignService
     {
         Task<Result<CampaignListResponse>> GetCampaignsForUserAsync(Guid userID);
+        Task<Result<CampaignListItem>> CreateCampaignAsync(CreateCampaignRequest request, Guid userID);
     }
 }

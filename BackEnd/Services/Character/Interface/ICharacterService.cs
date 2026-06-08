@@ -1,7 +1,10 @@
-﻿namespace BackEnd.Services.Character.Interface
+﻿using BackEnd.DTOs.Character;
+using BackEnd.ErrorHandling;
+
+namespace BackEnd.Services.Character.Interface
 {
     public interface ICharacterService
     {
-        public Task<List<Entities.Character.Character>> GetCharactersForUserAsync(Guid userId);
+        public Task<Result<CharacterListResponse>> GetCharactersForUserAsync(Guid userId);
     }
 }

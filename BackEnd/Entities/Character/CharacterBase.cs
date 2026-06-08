@@ -4,6 +4,6 @@ namespace BackEnd.Entities.Character
 {
     public abstract class CharacterBase : BaseEntity
     {
-        public string CharacterName { get; set; } = default!;
+        public string Name { get; set; } = default!;
     }
 }

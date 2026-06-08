@@ -52,5 +52,36 @@ namespace BackEnd.Services.Campaign.Implementation
 
             return Result<CampaignListResponse>.Ok(response);
         }
+
+        public async Task<Result<CampaignListItem>> CreateCampaignAsync(CreateCampaignRequest request, Guid userID)
+        {
+            // to do: add validation here to check if campaign with that name already exists, if it does then name it CampaignName-2 or CampaignName-3 etc.
+
+            var newCampaign = new BackEnd.Entities.Campaign.Campaign
+            {
+                Id = Guid.NewGuid(),
+                CampaignName = request.CampaignName,
+                DungeonMasterID = userID,
+                IsActive = true,
+                IsEnded = false,
+                CreatedAt = DateTime.UtcNow
+            };
+            var createdCampaign = await _campaignRepository.AddAsync(newCampaign);
+            if (createdCampaign == null)
+            {
+                return Result<CampaignListItem>.Fail("Failed to create campaign.");
+            }
+            var response = new CampaignListItem
+            {
+                Id = createdCampaign.Id,
+                CampaignName = createdCampaign.CampaignName,
+                DungeonMasterID = createdCampaign.DungeonMasterID,
+                IsActive = createdCampaign.IsActive,
+                IsEnded = createdCampaign.IsEnded,
+                CreatedAt = createdCampaign.CreatedAt,
+                IsDungeonMaster = true
+            };
+            return Result<CampaignListItem>.Ok(response);
+        }
     }
 }

@@ -31,5 +31,12 @@ namespace BackEnd.Services.Campaign.Implementation
                 .Distinct()
                 .ToListAsync();
         }
+
+        public async Task<Entities.Campaign.Campaign> AddAsync(Entities.Campaign.Campaign campaign)
+        {
+            await _context.Campaign.AddAsync(campaign);
+            await _context.SaveChangesAsync();
+            return campaign;
+        }
     }
 }

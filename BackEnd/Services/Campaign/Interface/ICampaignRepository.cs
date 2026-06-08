@@ -6,5 +6,7 @@ namespace BackEnd.Services.Campaign.Interface
     {
         Task<List<Entities.Campaign.Campaign>> GetByDMAsync(Guid userId); // all campaigns where the user is the DM
         Task<List<Entities.Campaign.Campaign>> GetByCharactersAsync(List<Entities.Character.Character> characters); // all campaigns where the user is a player
+        Task<Entities.Campaign.Campaign> AddAsync(Entities.Campaign.Campaign campaign);
+
     }
 }
