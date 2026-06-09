@@ -12,18 +12,12 @@ type Character = {
     level: string;
 }
 
-type PcCampaign = {
+type Campaign = {
     id: string;
     name: string;
-    characterName: string;
+    characterName: string; // nullable
     dungeonMaster: string; // name not id
     playerCount: number;
-}
-
-type DmCampaign = {
-    id: string;
-    name: string;
-    playerCount: number
 }
 
 export default function Dashboard() {
@@ -55,8 +49,9 @@ function CharacterTable() {
     )
 }
 
-function DMCampaignTable() {
-    const[dmCampaigns, setDmCampaigns] = useState<DmCampaign[]>([]);
+// will sort to campaigns where the player is the DM first
+function CampaignTable() {
+    const[campaigns, setCampaigns] = useState<Campaign[]>([]);
 
     return (
         <table>
@@ -68,12 +63,6 @@ function DMCampaignTable() {
             </thead>
         </table>
     )
-}
-
-function PlayerCampaignTable() {
-    const[pcCampaigns, setPcCampaigns] = useState<PcCampaign[]>([]);
-
-
 }
 
 */
