@@ -2,6 +2,6 @@
 {
     public class CreateCampaignRequest
     {
-        public string CampaignName { get; set; } = default!;
+        public string Name { get; set; } = default!;
     }
 }

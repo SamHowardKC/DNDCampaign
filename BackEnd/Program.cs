@@ -11,9 +11,12 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -28,6 +31,17 @@ namespace BackEnd
 
             // Load environment variables
             Env.Load();
+
+            builder.Services.AddRateLimiter(options =>
+            {
+                options.AddFixedWindowLimiter("Fixed", opt =>
+                {
+                    opt.PermitLimit = 100;                 // 100 requests
+                    opt.Window = TimeSpan.FromMinutes(1);  // per minute
+                    opt.QueueLimit = 2;                    // optional queue
+                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                });
+            });
 
             // CORS
             builder.Services.AddCors(options =>
@@ -108,6 +122,8 @@ namespace BackEnd
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            app.UseRateLimiter();
 
             // Swagger
             if (app.Environment.IsDevelopment())

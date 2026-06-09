@@ -41,7 +41,7 @@ namespace BackEnd.Services.Campaign.Implementation
                 Campaigns = CampaignList.Select(c => new CampaignListItem
                 {
                     Id = c.Id,
-                    CampaignName = c.CampaignName,
+                    Name = c.Name,
                     DungeonMasterID = c.DungeonMasterID,
                     IsActive = c.IsActive,
                     IsEnded = c.IsEnded,
@@ -55,12 +55,23 @@ namespace BackEnd.Services.Campaign.Implementation
 
         public async Task<Result<CampaignListItem>> CreateCampaignAsync(CreateCampaignRequest request, Guid userID)
         {
-            // to do: add validation here to check if campaign with that name already exists, if it does then name it CampaignName-2 or CampaignName-3 etc.
+            int count;
+
+            var existingCampaign = await _campaignRepository.GetByDMAsync(userID);
+
+            if (existingCampaign != null)
+            {
+                count = existingCampaign.Count;
+                request.Name = 
+                    request.Name 
+                    + "-" 
+                    + (count + 1).ToString();
+            }
 
             var newCampaign = new BackEnd.Entities.Campaign.Campaign
             {
                 Id = Guid.NewGuid(),
-                CampaignName = request.CampaignName,
+                Name = request.Name,
                 DungeonMasterID = userID,
                 IsActive = true,
                 IsEnded = false,
@@ -74,7 +85,7 @@ namespace BackEnd.Services.Campaign.Implementation
             var response = new CampaignListItem
             {
                 Id = createdCampaign.Id,
-                CampaignName = createdCampaign.CampaignName,
+                Name = createdCampaign.Name,
                 DungeonMasterID = createdCampaign.DungeonMasterID,
                 IsActive = createdCampaign.IsActive,
                 IsEnded = createdCampaign.IsEnded,
