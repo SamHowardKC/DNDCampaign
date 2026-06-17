@@ -43,6 +43,7 @@ namespace BackEnd.Controllers.Auth
             {
                 userID = result.Data.UserID,
                 username = result.Data.Username
+                token = result.Data.Token,
             });
         }
 
@@ -63,11 +64,9 @@ namespace BackEnd.Controllers.Auth
                 Path = "/"
             };
 
-            Response.Cookies.Append("jwt", result.Data.Token, cookieOptions);
-
-
             return Ok(new
             {
+                token = result.Data.Token,
                 userID = result.Data.UserID,
                 username = result.Data.Username
             });

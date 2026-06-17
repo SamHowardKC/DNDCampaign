@@ -32,8 +32,13 @@ export default function Login() {
             }
 
             // Success response (token, userID, username)
-            if ("userID" in result) {
+            if ("token" in result) {
                 console.log("Login successful:", result);
+
+                localStorage.setItem("jwt", result.data.Token);
+                localStorage.setItem("userID", result.data.UserID);
+                localStorage.setItem("username", result.data.Username);
+
                 navigate("/dashboard");
                 return;
             }

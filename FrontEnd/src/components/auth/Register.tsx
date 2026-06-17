@@ -3,6 +3,7 @@ import type { AuthResponse } from "../../interfaces/auth/AuthInterfaces";
 import type { ApiResponse } from "../../interfaces/Result";
 import { CheckEmailFormat, CheckUsername, CheckPasswordStrength } from "../../validation/auth/AuthValidation";
 import { styles } from "../../styles/auth/AuthStyle";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
     const [email, setEmail] = useState("");
@@ -11,6 +12,7 @@ export default function Register() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     const RegisterUser = async () => {
         setLoading(true);
@@ -43,9 +45,15 @@ export default function Register() {
             }
 
             // Success response (token, userID, username)
-            if ("userID" in result) {
-                console.log("Registration successful:", result);
-                return; // or navigate, or store token
+            if ("token" in result) {
+                console.log("Login successful:", result);
+
+                localStorage.setItem("jwt", result.data.Token);
+                localStorage.setItem("userID", result.data.UserID);
+                localStorage.setItem("username", result.data.Username);
+
+                navigate("/dashboard");
+                return;
             }
 
             // Fallback (should never happen)
