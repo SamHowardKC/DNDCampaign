@@ -36,8 +36,6 @@ namespace BackEnd.Controllers.Auth
                 Path = "/"
             };
 
-            Response.Cookies.Append("jwt", result.Data.Token, cookieOptions);
-
             return Ok(new
             {
                 userID = result.Data.UserID,
