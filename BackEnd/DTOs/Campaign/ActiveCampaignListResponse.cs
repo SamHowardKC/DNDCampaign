@@ -2,18 +2,16 @@
 
 namespace BackEnd.DTOs.Campaign
 {
-    public class CampaignListResponse
+    public class ActiveCampaignListResponse
     {
-        public List<CampaignListItem> Campaigns { get; set; } = new List<CampaignListItem>();
+        public List<ActiveCampaignListItem> Campaigns { get; set; } = new List<ActiveCampaignListItem>();
     }
 
-    public class CampaignListItem : BaseEntity
+    public class ActiveCampaignListItem : BaseEntity
     {
         public required string Name { get; set; }
         public Guid DungeonMasterID { get; set; }
         public required string DungeonMasterName { get; set; }
-        public bool IsActive { get; set; }
-        public bool IsEnded { get; set; }
         public bool IsDungeonMaster { get; set; }
     }
 }

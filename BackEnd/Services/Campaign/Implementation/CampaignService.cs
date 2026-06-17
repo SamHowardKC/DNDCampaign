@@ -26,47 +26,55 @@ namespace BackEnd.Services.Campaign.Implementation
             _userRepository = userRepository;
         }
 
-        public async Task<Result<CampaignListResponse>> GetCampaignsForUserAsync(Guid userID)
+        public async Task<Result<ActiveCampaignListResponse>> GetActiveCampaignsForUserAsync(Guid userID)
         {
-            var DMCampaignList = await _campaignRepository.GetByDMAsync(userID);
-
             var user = await _userRepository.GetByIdAsync(userID);
+            if (user == null)
+                return Result<ActiveCampaignListResponse>.Fail("No user found.");
 
-            var CharacterList = await _characterRepository.GetByUserAsync(userID);
+            // campaigns where user is dm
+            var dmCampaignList = await _campaignRepository.GetByDMAsync(userID);
+            if (dmCampaignList == null)
+                return Result<ActiveCampaignListResponse>.Fail("No campaigns found for the user.");
 
-            var PlayerCampaignList = await _campaignRepository.GetByCharactersAsync(CharacterList);
+            // all characters of user
+            var characterList = await _characterRepository.GetByUserAsync(userID);
+            
+            // all campaigns where the user has a character
+            var playerCampaignList = await _campaignRepository.GetByCharactersAsync(characterList);
 
-            var CampaignList = DMCampaignList.Union(PlayerCampaignList).ToList();
+            // list of active campaigns where user is either a player or dm 
+            var campaignList = dmCampaignList
+                .Union(playerCampaignList)
+                .Distinct()
+                .Where(c => c.IsActive && !c.IsEnded)
+                .ToList();
 
-            if (DMCampaignList == null)
+            var response = new ActiveCampaignListResponse
             {
-                return Result<CampaignListResponse>.Fail("No campaigns found for the user.");
-            }
-
-            var response = new CampaignListResponse
-            {
-                Campaigns = CampaignList.Select(c => new CampaignListItem
+                Campaigns = campaignList.Select(c => new ActiveCampaignListItem
                 {
                     Id = c.Id,
                     Name = c.Name,
                     DungeonMasterID = c.DungeonMasterID,
                     DungeonMasterName = user.Username,
-                    IsActive = c.IsActive,
-                    IsEnded = c.IsEnded,
                     CreatedAt = c.CreatedAt,
                     IsDungeonMaster = c.DungeonMasterID == userID
                 }).ToList()
             };
 
-            return Result<CampaignListResponse>.Ok(response);
+            return Result<ActiveCampaignListResponse>.Ok(response);
         }
 
-        public async Task<Result<CampaignListItem>> CreateCampaignAsync(CreateCampaignRequest request, Guid userID)
+        public async Task<Result<ActiveCampaignListItem>> CreateCampaignAsync(CreateCampaignRequest request, Guid userID)
         {
             int count;
 
-            var existingCampaign = await _campaignRepository.GetByDMAsync(userID);
             var user = await _userRepository.GetByIdAsync(userID);
+            if (user == null)
+                return Result<ActiveCampaignListItem>.Fail("No user found.");
+
+            var existingCampaign = await _campaignRepository.GetByDMAsync(userID);
 
             if (existingCampaign != null)
             {
@@ -89,20 +97,18 @@ namespace BackEnd.Services.Campaign.Implementation
             var createdCampaign = await _campaignRepository.AddAsync(newCampaign);
             if (createdCampaign == null)
             {
-                return Result<CampaignListItem>.Fail("Failed to create campaign.");
+                return Result<ActiveCampaignListItem>.Fail("Failed to create campaign.");
             }
-            var response = new CampaignListItem
+            var response = new ActiveCampaignListItem
             {
                 Id = createdCampaign.Id,
                 Name = createdCampaign.Name,
                 DungeonMasterName = user.Username,
                 DungeonMasterID = createdCampaign.DungeonMasterID,
-                IsActive = createdCampaign.IsActive,
-                IsEnded = createdCampaign.IsEnded,
                 CreatedAt = createdCampaign.CreatedAt,
                 IsDungeonMaster = true
             };
-            return Result<CampaignListItem>.Ok(response);
+            return Result<ActiveCampaignListItem>.Ok(response);
         }
     }
 }

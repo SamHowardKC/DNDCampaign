@@ -23,17 +23,17 @@ namespace BackEnd.Controllers.Campaign
 
         // GET: api/campaign/user
         [Authorize]
-        [HttpGet("user")]
-        public async Task<IActionResult> GetCampaignsForUser()
+        [HttpGet("activeuser")]
+        public async Task<IActionResult> GetActiveCampaignsForUser()
         {
             var userIdClaim = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
 
             if (userIdClaim == null)
-                return Unauthorized(BackEnd.ErrorHandling.Result<CampaignListResponse>.Fail("User ID not found in token"));
+                return Unauthorized(BackEnd.ErrorHandling.Result<ActiveCampaignListResponse>.Fail("User ID not found in token"));
 
             var userId = Guid.Parse(userIdClaim);
 
-            var result = await _campaignService.GetCampaignsForUserAsync(userId);
+            var result = await _campaignService.GetActiveCampaignsForUserAsync(userId);
 
             if (!result.Success)
                 return NotFound(result);
@@ -48,7 +48,7 @@ namespace BackEnd.Controllers.Campaign
             var userIdClaim = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
 
             if (userIdClaim == null)
-                return Unauthorized(BackEnd.ErrorHandling.Result<CampaignListResponse>.Fail("User ID not found in token"));
+                return Unauthorized(BackEnd.ErrorHandling.Result<ActiveCampaignListResponse>.Fail("User ID not found in token"));
 
             var userId = Guid.Parse(userIdClaim);
 
