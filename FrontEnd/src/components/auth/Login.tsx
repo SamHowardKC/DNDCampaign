@@ -25,8 +25,7 @@ export default function Login() {
 
             const result: AuthResponse = await response.json();
 
-            // Backend business logic error
-            if (result.error != "Default Error") {
+            if (result.error && !result.token) {
                 setError(result.error);
                 return;
             }
