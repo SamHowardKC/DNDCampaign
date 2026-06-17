@@ -33,7 +33,7 @@ function CampaignTable() {
     useEffect(() => {
         const loadCampaigns = async () => {
             try {
-                const res = await fetch("https://localhost:7228/api/campaign/activeuser", {
+                const res = await fetch("https://dndcampaign.onrender.com/api/campaign/activeuser", {
                     credentials: "include"
                 });
 
