@@ -38,6 +38,7 @@ namespace BackEnd.Controllers.Auth
 
             return Ok(new
             {
+                error = result.Error,
                 userID = result.Data.UserID,
                 username = result.Data.Username,
                 token = result.Data.Token,
@@ -63,6 +64,7 @@ namespace BackEnd.Controllers.Auth
 
             return Ok(new
             {
+                error = result.Error,
                 token = result.Data.Token,
                 userID = result.Data.UserID,
                 username = result.Data.Username
