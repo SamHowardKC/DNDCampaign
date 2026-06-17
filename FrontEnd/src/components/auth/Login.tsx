@@ -1,6 +1,5 @@
 import React, { useState} from "react";
 import type { AuthResponse } from "../../interfaces/auth/AuthInterfaces";
-import type { ResultInterface } from "../../interfaces/Result";
 import { styles } from "../../styles/auth/AuthStyle";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -24,20 +23,20 @@ export default function Login() {
             });
 
 
-            const result: ResultInterface<AuthResponse> = await response.json();
+            const result: AuthResponse = await response.json();
 
             // Business logic error (Result<T>)
-            if ("success" in result && result.success === false) {
-                throw new Error(result.error ?? "Login failed");
-            }
+            //if ("success" in result && result.success === false) {
+            //    throw new Error(result.error ?? "Login failed");
+            //}
 
             // Success response (token, userID, username)
-            if ("token" in result) {
+            if (result.Token && typeof result.Token === "string" && result.Token.trim() !== "") {
                 console.log("Login successful:", result);
 
-                localStorage.setItem("jwt", result.data.Token);
-                localStorage.setItem("userID", result.data.UserID);
-                localStorage.setItem("username", result.data.Username);
+                localStorage.setItem("jwt", result.Token);
+                localStorage.setItem("userID", result.UserID);
+                localStorage.setItem("username", result.Username);
 
                 navigate("/dashboard");
                 return;
