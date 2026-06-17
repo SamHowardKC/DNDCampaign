@@ -1,6 +1,5 @@
 import React, { useState} from "react";
 import type { AuthResponse } from "../../interfaces/auth/AuthInterfaces";
-import type { ApiResponse } from "../../interfaces/Result";
 import { CheckEmailFormat, CheckUsername, CheckPasswordStrength } from "../../validation/auth/AuthValidation";
 import { styles } from "../../styles/auth/AuthStyle";
 import { useNavigate } from "react-router-dom";
@@ -31,26 +30,15 @@ export default function Register() {
             body: JSON.stringify({ email, password, username, confirmPassword })
             });
 
-            const result: ApiResponse<AuthResponse> = await response.json();
-
-            // FluentValidation error
-            if ("errors" in result) {
-                const firstKey = Object.keys(result.errors)[0];
-                throw new Error(result.errors[firstKey][0]);
-            }
-
-            // Business logic error (Result<T>)
-            if ("success" in result && result.success === false) {
-                throw new Error(result.error ?? "Registration failed");
-            }
+            const result: AuthResponse = await response.json();
 
             // Success response (token, userID, username)
-            if ("token" in result) {
+            if (result.token && typeof result.token === "string" && result.token.trim() !== "") {
                 console.log("Login successful:", result);
 
-                localStorage.setItem("jwt", result.data.Token);
-                localStorage.setItem("userID", result.data.UserID);
-                localStorage.setItem("username", result.data.Username);
+                localStorage.setItem("jwt", result.token);
+                localStorage.setItem("userID", result.userID);
+                localStorage.setItem("username", result.username);
 
                 navigate("/dashboard");
                 return;

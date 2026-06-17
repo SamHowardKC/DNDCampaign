@@ -31,12 +31,12 @@ export default function Login() {
             //}
 
             // Success response (token, userID, username)
-            if (result.Token && typeof result.Token === "string" && result.Token.trim() !== "") {
+            if (result.token && typeof result.token === "string" && result.token.trim() !== "") {
                 console.log("Login successful:", result);
 
-                localStorage.setItem("jwt", result.Token);
-                localStorage.setItem("userID", result.UserID);
-                localStorage.setItem("username", result.Username);
+                localStorage.setItem("jwt", result.token);
+                localStorage.setItem("userID", result.userID);
+                localStorage.setItem("username", result.username);
 
                 navigate("/dashboard");
                 return;
