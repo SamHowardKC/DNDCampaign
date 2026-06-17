@@ -16,7 +16,7 @@ export default function Login() {
         setError("");
 
         try {
-            const response = await fetch("https://localhost:7228/api/auth/login", {
+            const response = await fetch("https://dndcampaign.onrender.com/api/auth/login", {
                 method: "POST",
                 credentials: "include",   // ← REQUIRED
                 headers: { "Content-Type": "application/json" },
