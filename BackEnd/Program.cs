@@ -48,8 +48,7 @@ namespace BackEnd
                 options.AddPolicy("AllowFrontend", policy =>
                 {
                     policy.WithOrigins("http://localhost:5173",               
-                                        "https://dnd-campaign-wine.vercel.app",
-                                        "https://dnd-campaign-30u65f2z6-sam-howard-s-projects.vercel.app")
+                                        "https://dnd-campaign-wine.vercel.app")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();
@@ -122,6 +121,8 @@ namespace BackEnd
 
             var app = builder.Build();
 
+            app.UseCors("AllowFrontend");
+
             app.UseRateLimiter();
 
             // Swagger
@@ -135,8 +136,6 @@ namespace BackEnd
             {
                 app.UseHttpsRedirection();
             }
-
-            app.UseCors("AllowFrontend");
 
             // Authentication + Authorization
             app.UseAuthentication();
