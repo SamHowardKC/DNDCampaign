@@ -25,6 +25,8 @@ export default function Login() {
 
             const result: AuthResponse = await response.json();
 
+            console.log("RAW LOGIN RESPONSE:", result);
+
             // Business logic error (Result<T>)
             //if ("success" in result && result.success === false) {
             //    throw new Error(result.error ?? "Login failed");
