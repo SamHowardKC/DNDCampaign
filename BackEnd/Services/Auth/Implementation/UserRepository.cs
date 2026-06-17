@@ -20,6 +20,11 @@ namespace BackEnd.Services.Auth.Implementation
             return await _context.User.FirstOrDefaultAsync(u => u.Email == email);
         }
 
+        public async Task<User?> GetByIdAsync(Guid userID)
+        {
+            return await _context.User.FirstOrDefaultAsync(u => u.Id == userID);
+        }
+
         public async Task<User> CreateAsync(User user)
         {
             await _context.User.AddAsync(user);

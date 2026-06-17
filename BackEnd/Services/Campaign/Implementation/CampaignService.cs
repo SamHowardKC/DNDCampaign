@@ -1,11 +1,14 @@
 ﻿using BackEnd.DTOs.Campaign;
 using BackEnd.Entities.Campaign;
+using BackEnd.Entities.Auth;
 using BackEnd.ErrorHandling;
 using BackEnd.Services.Campaign.Interface;
 using BackEnd.Services.Character.Interface;
+using BackEnd.Services.Auth;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Linq;
 using System.Runtime.InteropServices;
+using BackEnd.Services.Auth.Interface;
 
 namespace BackEnd.Services.Campaign.Implementation
 {
@@ -13,17 +16,21 @@ namespace BackEnd.Services.Campaign.Implementation
     {
         private readonly ICampaignRepository _campaignRepository;
         private readonly ICharacterRepository _characterRepository;
+        private readonly IUserRepository _userRepository;
         public CampaignService(ICampaignRepository campaignRepository,
-            ICharacterRepository characterRepository)
+            ICharacterRepository characterRepository,
+            IUserRepository userRepository)
         {
             _campaignRepository = campaignRepository;
             _characterRepository = characterRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<Result<CampaignListResponse>> GetCampaignsForUserAsync(Guid userID)
         {
-            // this is a work in progress
             var DMCampaignList = await _campaignRepository.GetByDMAsync(userID);
+
+            var user = await _userRepository.GetByIdAsync(userID);
 
             var CharacterList = await _characterRepository.GetByUserAsync(userID);
 
@@ -43,6 +50,7 @@ namespace BackEnd.Services.Campaign.Implementation
                     Id = c.Id,
                     Name = c.Name,
                     DungeonMasterID = c.DungeonMasterID,
+                    DungeonMasterName = user.Username,
                     IsActive = c.IsActive,
                     IsEnded = c.IsEnded,
                     CreatedAt = c.CreatedAt,
@@ -58,6 +66,7 @@ namespace BackEnd.Services.Campaign.Implementation
             int count;
 
             var existingCampaign = await _campaignRepository.GetByDMAsync(userID);
+            var user = await _userRepository.GetByIdAsync(userID);
 
             if (existingCampaign != null)
             {
@@ -86,6 +95,7 @@ namespace BackEnd.Services.Campaign.Implementation
             {
                 Id = createdCampaign.Id,
                 Name = createdCampaign.Name,
+                DungeonMasterName = user.Username,
                 DungeonMasterID = createdCampaign.DungeonMasterID,
                 IsActive = createdCampaign.IsActive,
                 IsEnded = createdCampaign.IsEnded,
