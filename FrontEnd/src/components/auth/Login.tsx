@@ -25,12 +25,11 @@ export default function Login() {
 
             const result: AuthResponse = await response.json();
 
-            console.log("RAW LOGIN RESPONSE:", result);
-
-            // Business logic error (Result<T>)
-            //if ("success" in result && result.success === false) {
-            //    throw new Error(result.error ?? "Login failed");
-            //}
+            // Backend business logic error
+            if (result.error) {
+                setError(result.error);
+                return;
+            }
 
             // Success response (token, userID, username)
             if (result.token && typeof result.token === "string" && result.token.trim() !== "") {

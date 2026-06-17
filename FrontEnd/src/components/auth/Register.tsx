@@ -32,6 +32,12 @@ export default function Register() {
 
             const result: AuthResponse = await response.json();
 
+            // Backend business logic error
+            if (result.error) {
+                setError(result.error);
+                return;
+            }
+
             // Success response (token, userID, username)
             if (result.token && typeof result.token === "string" && result.token.trim() !== "") {
                 console.log("Login successful:", result);
