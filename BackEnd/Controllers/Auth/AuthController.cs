@@ -38,11 +38,10 @@ namespace BackEnd.Controllers.Auth
 
             Response.Cookies.Append("jwt", result.Data.Token, cookieOptions);
 
-
             return Ok(new
             {
                 userID = result.Data.UserID,
-                username = result.Data.Username
+                username = result.Data.Username,
                 token = result.Data.Token,
             });
         }
