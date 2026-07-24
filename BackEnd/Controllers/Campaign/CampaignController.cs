@@ -3,6 +3,7 @@ using BackEnd.ErrorHandling;
 using BackEnd.Services.Campaign.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.JsonWebTokens;
 using System.Security.Claims;
 
@@ -10,6 +11,7 @@ namespace BackEnd.Controllers.Campaign
 {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableRateLimiting("Fixed")]
     public class CampaignController : ControllerBase
     {
         private readonly ICampaignService _campaignService;

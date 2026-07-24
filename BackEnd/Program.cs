@@ -10,6 +10,7 @@ using DotNetEnv;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
@@ -31,15 +32,38 @@ namespace BackEnd
             // Load environment variables
             Env.Load();
 
+            builder.Services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+            });
+
             builder.Services.AddRateLimiter(options =>
             {
-                options.AddFixedWindowLimiter("Fixed", opt =>
-                {
-                    opt.PermitLimit = 100;                 // 100 requests
-                    opt.Window = TimeSpan.FromMinutes(1);  // per minute
-                    opt.QueueLimit = 2;                    // optional queue
-                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                });
+                // Reject with 429 (the correct status) rather than the default 503.
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                options.AddPolicy("Fixed", httpContext =>
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 100,                 // 100 requests
+                            Window = TimeSpan.FromMinutes(1),  // per minute, per IP
+                            QueueLimit = 0
+                        }));
+
+                options.AddPolicy("auth", httpContext =>
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 10,                  // 10 attempts
+                            Window = TimeSpan.FromMinutes(1),  // per minute, per IP
+                            QueueLimit = 0
+                        }));
             });
 
             // CORS
@@ -110,6 +134,8 @@ namespace BackEnd
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            app.UseForwardedHeaders();
 
             app.UseCors("AllowFrontend");
 

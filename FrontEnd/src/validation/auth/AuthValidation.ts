@@ -6,11 +6,11 @@ export function CheckPasswordStrength(password: string, confirmpassword: string)
     if (password.length === 0)
         return { isStrong: false, message: "Password cannot be empty." };
 
-    if (password.length < 6)
-        return { isStrong: false, message: "Password must be at least 6 characters long." };
+    if (password.length < 12)
+        return { isStrong: false, message: "Password must be at least 12 characters long." };
 
-    if (password.length > 128)
-        return { isStrong: false, message: "Password cannot be longer than 128 characters." };
+    if (password.length > 64)
+        return { isStrong: false, message: "Password cannot be longer than 64 characters." };
 
     if (password.includes(" "))
         return { isStrong: false, message: "Password cannot contain spaces." };

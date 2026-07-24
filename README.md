@@ -26,7 +26,7 @@ See the following files for full details
 - Users can create campaigns and invite other users
 - Users can create and delete characters, then join campaigns using a randomly generated invite code
 - Many-to-many relationship between characters and campaigns via the `CharacterCampaign` table
-- JWT authentication with role-based access control
+- JWT authentication (bearer tokens; role-based access control is not yet implemented)
 - Automatic level calculation based on XP
 - Automatic death detection when HP reaches 0
 - WebSocket-powered live updates when players join or leave a campaign (visible to all connected users)
