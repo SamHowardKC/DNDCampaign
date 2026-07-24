@@ -2,6 +2,9 @@ import React, { useState} from "react";
 import type { AuthResponse } from "../../interfaces/auth/AuthInterfaces";
 import { styles } from "../../styles/auth/AuthStyle";
 import { Link, useNavigate } from "react-router-dom";
+import { API_BASE } from "../../api/config";
+import { extractError } from "../../api/apiClient";
+import { saveAuth } from "../../auth/auth";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -15,32 +18,33 @@ export default function Login() {
         setError("");
 
         try {
-            const response = await fetch("https://dndcampaign.onrender.com/api/auth/login", {
+            const response = await fetch(`${API_BASE}/api/auth/login`, {
                 method: "POST",
-                credentials: "include",   // ← REQUIRED
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
             });
 
+            // Trust the HTTP status, not just the body shape.
+            if (!response.ok) {
+                setError(await extractError(response));
+                return;
+            }
 
             const result: AuthResponse = await response.json();
 
-            if (result.error && !result.token) {
-                setError(result.error);
+            if (!result.token || result.token.trim() === "") {
+                setError("Unexpected server response");
                 return;
             }
 
-            // Success response (token, userID, username)
-            if (result.token && typeof result.token === "string" && result.token.trim() !== "") {
-                console.log("Login successful:", result);
+            saveAuth({
+                token: result.token,
+                userID: String(result.userID),
+                username: result.username
+            });
 
-                localStorage.setItem("jwt", result.token);
-                localStorage.setItem("userID", result.userID);
-                localStorage.setItem("username", result.username);
-
-                navigate("/dashboard");
-                return;
-            }
+            navigate("/dashboard");
+            return;
         }
         catch (err) {
             if (err instanceof Error) {

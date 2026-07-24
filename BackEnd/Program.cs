@@ -74,9 +74,12 @@ namespace BackEnd
             builder.Services.AddScoped<ICampaignService, CampaignService>();
             builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
 
+            // Don't remap inbound claim types, so the claim names we read in the
+            // controllers ("sub") are exactly the ones JwtProvider writes.
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-            // JWT Authentication (reads token from HttpOnly cookie)
+            // JWT Authentication — the token arrives in the Authorization: Bearer
+            // header (default JwtBearer behavior), so no custom token reader is needed.
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -84,20 +87,6 @@ namespace BackEnd
             })
             .AddJwtBearer(options =>
             {
-                options.Events = new JwtBearerEvents
-                {
-                    OnMessageReceived = context =>
-                    {
-                        // Read JWT from cookie instead of Authorization header
-                        if (context.Request.Cookies.ContainsKey("jwt"))
-                        {
-                            context.Token = context.Request.Cookies["jwt"];
-                        }
-
-                        return Task.CompletedTask;
-                    }
-                };
-
                 var jwtKey = builder.Configuration["Jwt:Key"]
                     ?? throw new InvalidOperationException("JWT Key is missing from configuration.");
 

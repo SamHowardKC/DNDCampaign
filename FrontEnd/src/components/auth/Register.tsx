@@ -3,6 +3,9 @@ import type { AuthResponse } from "../../interfaces/auth/AuthInterfaces";
 import { CheckEmailFormat, CheckUsername, CheckPasswordStrength } from "../../validation/auth/AuthValidation";
 import { styles } from "../../styles/auth/AuthStyle";
 import { useNavigate } from "react-router-dom";
+import { API_BASE } from "../../api/config";
+import { extractError } from "../../api/apiClient";
+import { saveAuth } from "../../auth/auth";
 
 export default function Register() {
     const [email, setEmail] = useState("");
@@ -23,35 +26,35 @@ export default function Register() {
         }
 
         try {
-            const response = await fetch("https://dndcampaign.onrender.com/api/auth/register", {
+            const response = await fetch(`${API_BASE}/api/auth/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            credentials: "include",
             body: JSON.stringify({ email, password, username, confirmPassword })
             });
 
+            // Trust the HTTP status, not just the body shape.
+            if (!response.ok) {
+                setError(await extractError(response));
+                return;
+            }
+
             const result: AuthResponse = await response.json();
 
-            if (result.error && !result.token) {
-                setError(result.error);
-                return;
-            }
-            // Success response (token, userID, username)
-            if (result.token && typeof result.token === "string" && result.token.trim() !== "") {
-                console.log("Login successful:", result);
-
-                localStorage.setItem("jwt", result.token);
-                localStorage.setItem("userID", result.userID);
-                localStorage.setItem("username", result.username);
-
-                navigate("/dashboard");
+            if (!result.token || result.token.trim() === "") {
+                setError("Unexpected server response");
                 return;
             }
 
-            // Fallback (should never happen)
-            throw new Error("Unexpected server response");
-        } 
-        
+            saveAuth({
+                token: result.token,
+                userID: String(result.userID),
+                username: result.username
+            });
+
+            navigate("/dashboard");
+            return;
+        }
+
         catch (err) {
             if (err instanceof Error) {
             setError(err.message); // shows backend error
