@@ -2,7 +2,6 @@
 using BackEnd.Entities.Auth;
 using BackEnd.ErrorHandling; // <-- This is where Result<T> should live
 using BackEnd.Services.Auth.Interface;
-using Microsoft.AspNetCore.Components.Forms;
 
 namespace BackEnd.Services.Auth.Implementation
 {
@@ -32,6 +31,11 @@ namespace BackEnd.Services.Auth.Implementation
             // verify password
             bool validPassword = _passwordHasher.Verify(request.Password, user.Password);
             if (!validPassword)
+                return Result<AuthResponse>.Fail("Invalid email or password.");
+
+            // reject deactivated accounts — use the same generic message so we
+            // don't reveal that the account exists but is disabled
+            if (!user.IsActive)
                 return Result<AuthResponse>.Fail("Invalid email or password.");
 
             // generate jwt

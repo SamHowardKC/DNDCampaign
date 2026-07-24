@@ -28,11 +28,15 @@ namespace BackEnd.Services.Auth.Implementation
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+            // Identify the user with the standard "sub" claim. We read this exact
+            // claim name back in the controllers, so generation and validation agree
+            // without depending on ASP.NET's inbound/outbound claim-type remapping.
+            // Audience is supplied once via the constructor below — adding it here too
+            // would produce a duplicate "aud" entry.
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Aud, _config["Jwt:Audience"])   // ← REQUIRED
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
             var token = new JwtSecurityToken(
