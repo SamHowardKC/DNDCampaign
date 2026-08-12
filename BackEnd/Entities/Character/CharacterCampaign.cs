@@ -11,10 +11,10 @@ namespace BackEnd.Entities.Character
         public Guid CharacterID { get; set; }
         public Character Character { get; set; } = default!;
 
-        public int Xp { get; set; } 
+        public int CharacterXP { get; set; } 
         public int Level { get; set; }
-        public int Hp { get; set; }
-        public int MaxHp { get; set; } 
+        public int CharacterHP { get; set; }
+        public int CharacterMaxHP { get; set; } 
         public DateTimeOffset CreatedAt { get; set; }
     }
 }

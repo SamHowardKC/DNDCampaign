@@ -35,10 +35,10 @@ namespace BackEnd.Services.Character.Implementation
                     {
                         Campaigns = c.CharacterCampaigns.Select(cc => new CharacterCampaignListItem
                         {
-                            Level = cc.Level,
-                            Xp = cc.Xp,
-                            MaxHp = cc.MaxHp,
-                            Hp = cc.Hp,
+                            //Level = cc.Level,
+                            Xp = cc.CharacterXP,
+                            MaxHp = cc.CharacterMaxHP,
+                            Hp = cc.CharacterHP,
                             CreatedAt = cc.CreatedAt
                         }).ToList()
                     }
