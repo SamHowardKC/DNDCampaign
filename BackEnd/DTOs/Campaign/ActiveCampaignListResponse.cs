@@ -13,5 +13,8 @@ namespace BackEnd.DTOs.Campaign
         public Guid DungeonMasterID { get; set; }
         public required string DungeonMasterName { get; set; }
         public bool IsDungeonMaster { get; set; }
+        public required int NumberOfPlayers { get; set; }
+        public required decimal AveragePlayerLevel { get; set; }
+        public required int PlayerLevel { get; set; }
     }
 }

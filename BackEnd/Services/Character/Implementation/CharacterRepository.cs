@@ -14,7 +14,7 @@ namespace BackEnd.Services.Character.Implementation
         }
         public async Task<List<Entities.Character.Character>> GetByUserAsync(Guid userId)
         {
-            return await _context.Character.Where(c => c.Id == userId).ToListAsync();
+            return await _context.Character.Where(c => c.UserID == userId).ToListAsync();
         }
     }
 }

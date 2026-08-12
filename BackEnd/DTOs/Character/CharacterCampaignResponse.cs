@@ -12,5 +12,6 @@ namespace BackEnd.DTOs.Character
         public int Xp { get; set; } = default!;
         public int MaxHp { get; set; } = default!;
         public int Hp { get; set; } = default!;
+        public int Level { get; set; } = default!;
     }
 }

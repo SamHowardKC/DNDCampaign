@@ -18,6 +18,7 @@ namespace BackEnd.Services.Campaign.Implementation
         public async Task<List<Entities.Campaign.Campaign>> GetByDMAsync(Guid userId)
         {
             return await _context.Campaign
+                .Include(c => c.CharacterCampaigns)
                 .Where(c => c.DungeonMasterID == userId)
                 .ToListAsync();
         }
@@ -25,9 +26,9 @@ namespace BackEnd.Services.Campaign.Implementation
         {
             var characterIds = characters.Select(c => c.Id).ToList();
 
-            return await _context.CharacterCampaign
-                .Where(cc => characterIds.Contains(cc.CharacterID))
-                .Select(cc => cc.Campaign)   // return Campaign entity
+            return await _context.Campaign
+                .Include(c => c.CharacterCampaigns)
+                .Where(c => c.CharacterCampaigns.Any(cc => characterIds.Contains(cc.CharacterID)))
                 .Distinct()
                 .ToListAsync();
         }

@@ -90,6 +90,8 @@ function CampaignTable() {
                     <th style={styles.th}>Character</th>
                     <th style={styles.th}>Dungeon Master</th>
                     <th style={styles.th}>Players</th>
+                    <th style={styles.th}>Your Level</th>
+                    <th style={styles.th}>Average Level</th>
                 </tr>
             </thead>
 
