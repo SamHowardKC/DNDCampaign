@@ -12,7 +12,7 @@ namespace BackEnd.Entities.Character
         public Character Character { get; set; } = default!;
 
         public int CharacterXP { get; set; } 
-        public int Level { get; set; }
+        //public int Level { get; set; }aa
         public int CharacterHP { get; set; }
         public int CharacterMaxHP { get; set; } 
         public DateTimeOffset CreatedAt { get; set; }

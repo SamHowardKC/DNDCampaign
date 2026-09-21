@@ -65,6 +65,7 @@ namespace BackEnd.Services.Campaign.Implementation
                 var myCharacterCampaign = c.CharacterCampaigns
                     .FirstOrDefault(cc => myCharacterIds.Contains(cc.CharacterID));
 
+                // add a function which calculates average player level
                 campaignItems.Add(new ActiveCampaignListItem
                 {
                     Id = c.Id,
@@ -74,11 +75,12 @@ namespace BackEnd.Services.Campaign.Implementation
                     CreatedAt = c.CreatedAt,
                     IsDungeonMaster = isDungeonMaster,
                     NumberOfPlayers = c.CharacterCampaigns.Count,
-                    AveragePlayerLevel = c.CharacterCampaigns.Count > 0
-                        ? (decimal)c.CharacterCampaigns.Average(cc => cc.Level)
-                        : 0m,
+                    AveragePlayerLevel = 0,
+                    //c.CharacterCampaigns.Count > 0
+                      //  ? (decimal)c.CharacterCampaigns.Average(cc => cc.Level)
+                        //: 0m,
                     // DM has no character in their own campaign, so there's no "your level" to report.
-                    PlayerLevel = isDungeonMaster ? 0 : (myCharacterCampaign?.Level ?? 0)
+                    PlayerLevel = 0 //isDungeonMaster ? 0 : (myCharacterCampaign?.Level ?? 0)
                 });
             }
 
