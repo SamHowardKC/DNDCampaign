@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Components.Forms;
 using System.Linq;
 using System.Runtime.InteropServices;
 using BackEnd.Services.Auth.Interface;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 
 namespace BackEnd.Services.Campaign.Implementation
 {
@@ -82,7 +84,10 @@ namespace BackEnd.Services.Campaign.Implementation
                     // DM has no character in their own campaign, so there's no "your level" to report.
                     PlayerLevel = 0 //isDungeonMaster ? 0 : (myCharacterCampaign?.Level ?? 0)
                 });
+                
             }
+
+            GetAverageLevel(campaignItems);
 
             var response = new ActiveCampaignListResponse
             {
@@ -138,6 +143,22 @@ namespace BackEnd.Services.Campaign.Implementation
                 IsDungeonMaster = true
             };
             return Result<ActiveCampaignListItem>.Ok(response);
+        }
+
+        private float GetAverageLevel(List<ActiveCampaignListItem> _campaigns)
+        {
+            int totalXP;
+            int numberOfPlayers = 0;
+           
+
+            foreach (var c in _campaigns)
+            {
+                {
+                    numberOfPlayers++;
+                    totalXP =
+                }
+            }
+            return 0;
         }
     }
 }
