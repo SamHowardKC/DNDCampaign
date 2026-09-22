@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using BackEnd.Services.Auth.Interface;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
+using BackEnd.Services.CharacterCampaign.Interface;
 
 namespace BackEnd.Services.Campaign.Implementation
 {
@@ -19,13 +20,16 @@ namespace BackEnd.Services.Campaign.Implementation
         private readonly ICampaignRepository _campaignRepository;
         private readonly ICharacterRepository _characterRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ICharacterCampaignRepository _characterCampaignRepository;
         public CampaignService(ICampaignRepository campaignRepository,
             ICharacterRepository characterRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            ICharacterCampaignRepository characterCampaignRepository)
         {
             _campaignRepository = campaignRepository;
             _characterRepository = characterRepository;
             _userRepository = userRepository;
+            _characterCampaignRepository = characterCampaignRepository;
         }
 
         public async Task<Result<ActiveCampaignListResponse>> GetActiveCampaignsForUserAsync(Guid userID)
@@ -63,9 +67,10 @@ namespace BackEnd.Services.Campaign.Implementation
                 var dungeonMasterName = isDungeonMaster
                     ? user.Username
                     : (await _userRepository.GetByIdAsync(c.DungeonMasterID))?.Username ?? "Unknown";
-
                 var myCharacterCampaign = c.CharacterCampaigns
                     .FirstOrDefault(cc => myCharacterIds.Contains(cc.CharacterID));
+
+                var characterCampaigns = await _characterCampaignRepository.GetByCampaignAsync(c.Campaign)
 
                 // add a function which calculates average player level
                 campaignItems.Add(new ActiveCampaignListItem
@@ -149,15 +154,6 @@ namespace BackEnd.Services.Campaign.Implementation
         {
             int totalXP;
             int numberOfPlayers = 0;
-           
-
-            foreach (var c in _campaigns)
-            {
-                {
-                    numberOfPlayers++;
-                    totalXP =
-                }
-            }
             return 0;
         }
     }
