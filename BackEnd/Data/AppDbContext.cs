@@ -1,6 +1,7 @@
 ﻿using BackEnd.Entities.Auth;
 using BackEnd.Entities.Campaign;
 using BackEnd.Entities.Character;
+using BackEnd.Entities.Level;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackEnd.Data
@@ -24,5 +25,6 @@ namespace BackEnd.Data
         public DbSet<CharacterCampaign> CharacterCampaign { get; set; }
         public DbSet<Character> Character { get; set; }
         public DbSet<CharacterClass> CharacterClass { get; set; }
+        public DbSet<Level> Level { get; set; }
     }
 }
