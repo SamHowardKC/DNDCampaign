@@ -34,6 +34,13 @@ namespace BackEnd.Services.Campaign.Implementation
 
         public async Task<Result<ActiveCampaignListResponse>> GetActiveCampaignsForUserAsync(Guid userID)
         {
+            int totalLevel = 0;
+            int xp;
+            decimal averageLevel;
+            int level;
+            int numCharacters = 1;
+            int userLevel = 0; // the level of the logged in player
+
             var user = await _userRepository.GetByIdAsync(userID);
             if (user == null)
                 return Result<ActiveCampaignListResponse>.Fail("No user found.");
@@ -67,10 +74,24 @@ namespace BackEnd.Services.Campaign.Implementation
                 var dungeonMasterName = isDungeonMaster
                     ? user.Username
                     : (await _userRepository.GetByIdAsync(c.DungeonMasterID))?.Username ?? "Unknown";
-                var myCharacterCampaign = c.CharacterCampaigns
-                    .FirstOrDefault(cc => myCharacterIds.Contains(cc.CharacterID));
 
-                var characterCampaigns = await _characterCampaignRepository.GetByCampaignAsync(c.Campaign)
+                // Calculate average level
+                // O(N^2) is fine here because we will be capping players at 10 campaigns, and realistically no one is in more than 3 at once
+                var characterCampaigns = await _characterCampaignRepository.GetByCampaignAsync(c.Id);
+                foreach (var charCampaigns in characterCampaigns)
+                {
+                    xp = charCampaigns.CharacterXP;
+                    level = await _levelRepository.GetLevel(xp);
+                    numCharacters = numCharacters + 1;
+                    totalLevel = totalLevel + level;
+
+                    foreach (var CharId in myCharacterIds)
+                    {
+                        if (CharId == charCampaigns.CharacterID)
+                            userLevel = level;
+                    }
+                }
+                averageLevel = totalLevel / numCharacters;
 
                 // add a function which calculates average player level
                 campaignItems.Add(new ActiveCampaignListItem
@@ -82,17 +103,11 @@ namespace BackEnd.Services.Campaign.Implementation
                     CreatedAt = c.CreatedAt,
                     IsDungeonMaster = isDungeonMaster,
                     NumberOfPlayers = c.CharacterCampaigns.Count,
-                    AveragePlayerLevel = 0,
-                    //c.CharacterCampaigns.Count > 0
-                      //  ? (decimal)c.CharacterCampaigns.Average(cc => cc.Level)
-                        //: 0m,
-                    // DM has no character in their own campaign, so there's no "your level" to report.
-                    PlayerLevel = 0 //isDungeonMaster ? 0 : (myCharacterCampaign?.Level ?? 0)
+                    AveragePlayerLevel = averageLevel,
+                    PlayerLevel = userLevel
                 });
                 
             }
-
-            GetAverageLevel(campaignItems);
 
             var response = new ActiveCampaignListResponse
             {
@@ -148,13 +163,6 @@ namespace BackEnd.Services.Campaign.Implementation
                 IsDungeonMaster = true
             };
             return Result<ActiveCampaignListItem>.Ok(response);
-        }
-
-        private float GetAverageLevel(List<ActiveCampaignListItem> _campaigns)
-        {
-            int totalXP;
-            int numberOfPlayers = 0;
-            return 0;
         }
     }
 }
