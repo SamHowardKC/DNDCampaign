@@ -94,6 +94,7 @@ namespace BackEnd.Services.Campaign.Implementation
                     ? user.Username
                     : (await _userRepository.GetByIdAsync(c.DungeonMasterID))?.Username ?? "Unknown";
 
+                /*
                 // Calculate average level
                 // O(N^2) is fine here because we will be capping players at 10 campaigns, and realistically no one is in more than 3 at once
                 var characterCampaigns = await _characterCampaignRepository.GetByCampaignAsync(c.Id);
@@ -111,6 +112,7 @@ namespace BackEnd.Services.Campaign.Implementation
                     }
                 }
                 averageLevel = totalLevel / numCharacters;
+                
 
                 // add a function which calculates average player level
                 campaignItems.Add(new ActiveCampaignListItem
@@ -125,7 +127,7 @@ namespace BackEnd.Services.Campaign.Implementation
                     AveragePlayerLevel = averageLevel,
                     PlayerLevel = userLevel
                 });
-                
+                */
             }
 
             var response = new ActiveCampaignListResponse

@@ -5,7 +5,7 @@ namespace BackEnd.Entities.Level
 {
     public class Level : BaseEntity
     {
-        int XPToReach;
-        int LevelNumber;
+        public int XPToReach;
+        public int LevelNumber;
     }
 }
