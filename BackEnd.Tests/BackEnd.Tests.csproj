@@ -23,4 +23,8 @@
     <ProjectReference Include="..\BackEnd\BackEnd.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Integration\" />
+  </ItemGroup>
+
 </Project>
