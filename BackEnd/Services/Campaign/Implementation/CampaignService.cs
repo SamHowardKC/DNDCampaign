@@ -60,12 +60,10 @@ namespace BackEnd.Services.Campaign.Implementation
 
             var user = await _userRepository.GetByIdAsync(userID);
             if (user == null)
-                return Result<ActiveCampaignListResponse>.Fail("No user found.");
+                return Result<ActiveCampaignListResponse>.Fail(ErrorType.NotFound, "No user found.");
 
             // campaigns where user is dm
             var dmCampaignList = await _campaignRepository.GetByDMAsync(userID);
-            if (dmCampaignList == null)
-                return Result<ActiveCampaignListResponse>.Fail("No campaigns found for the user.");
 
             // all characters of user
             var characterList = await _characterRepository.GetByUserAsync(userID);
@@ -140,22 +138,16 @@ namespace BackEnd.Services.Campaign.Implementation
 
         public async Task<Result<ActiveCampaignListItem>> CreateCampaignAsync(CreateCampaignRequest request, Guid userID)
         {
-            int count;
-
             var user = await _userRepository.GetByIdAsync(userID);
             if (user == null)
-                return Result<ActiveCampaignListItem>.Fail("No user found.");
+                return Result<ActiveCampaignListItem>.Fail(ErrorType.NotFound, "No user found.");
 
-            var existingCampaign = await _campaignRepository.GetByDMAsync(userID);
+            var existingCampaigns = await _campaignRepository.GetByDMAsync(userID);
 
-            if (existingCampaign != null)
-            {
-                count = existingCampaign.Count;
-                request.Name = 
-                    request.Name 
-                    + "-" 
-                    + (count + 1).ToString();
-            }
+            request.Name =
+                request.Name
+                + "-"
+                + (existingCampaigns.Count + 1).ToString();
 
             var newCampaign = new BackEnd.Entities.Campaign.Campaign
             {
@@ -167,10 +159,7 @@ namespace BackEnd.Services.Campaign.Implementation
                 CreatedAt = DateTime.UtcNow
             };
             var createdCampaign = await _campaignRepository.AddAsync(newCampaign);
-            if (createdCampaign == null)
-            {
-                return Result<ActiveCampaignListItem>.Fail("Failed to create campaign.");
-            }
+
             var response = new ActiveCampaignListItem
             {
                 Id = createdCampaign.Id,

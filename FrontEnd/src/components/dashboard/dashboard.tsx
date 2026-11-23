@@ -3,11 +3,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { styles } from "../../styles/dashboard/DashboardStyle";
-import type { ResultInterface } from "../../interfaces/Result";
-import type { ActiveCampaign } from "../../interfaces/Campaign/CampaignInterfaces";
+import type { ActiveCampaign, ActiveCampaignListResponse } from "../../interfaces/Campaign/CampaignInterfaces";
 import { authFetch, extractError, UnauthorizedError } from "../../api/apiClient";
 import { logout } from "../../auth/auth";
-//import type { ResultInterface } from "../../interfaces/Result";
 //import { Link, useNavigate } from "react-router-dom";
 
 
@@ -55,16 +53,9 @@ function CampaignTable() {
                     return;
                 }
 
-                const result: ResultInterface<{ campaigns: ActiveCampaign[] }> = await res.json();
-
-                // Backend returned a failure Result<T>
-                if (!result.success) {
-                    setError(result.error ?? "Failed to load campaigns");
-                    return;
-                }
-
-                // Success → extract campaigns from result.data
-                setCampaigns(result.data.campaigns);
+                // A 2xx status means the body is the DTO itself
+                const result: ActiveCampaignListResponse = await res.json();
+                setCampaigns(result.campaigns);
             } catch (err) {
                 if (err instanceof UnauthorizedError) {
                     // Token was rejected and already cleared — send the user to log in.

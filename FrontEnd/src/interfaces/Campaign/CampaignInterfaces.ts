@@ -5,3 +5,7 @@ export interface ActiveCampaign {
     dungeonMasterName: string
     isDungeonMaster: boolean
 }
+
+export interface ActiveCampaignListResponse {
+    campaigns: ActiveCampaign[]
+}

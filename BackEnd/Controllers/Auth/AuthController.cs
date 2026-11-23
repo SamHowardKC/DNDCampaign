@@ -1,4 +1,5 @@
 ﻿using BackEnd.DTOs.Auth;
+using BackEnd.ErrorHandling;
 using BackEnd.Services.Auth.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -23,16 +24,11 @@ namespace BackEnd.Controllers.Auth
             var result = await _authService.LoginAsync(request);
 
             if (!result.Success)
-                return BadRequest(result);
+                return this.ToProblem(result);
 
             // The client authenticates with an Authorization: Bearer header, so the
             // token is returned in the response body for the client to store and send.
-            return Ok(new
-            {
-                userID = result.Data.UserID,
-                username = result.Data.Username,
-                token = result.Data.Token,
-            });
+            return Ok(result.Data);
         }
 
         [HttpPost("register")]
@@ -41,14 +37,9 @@ namespace BackEnd.Controllers.Auth
             var result = await _authService.RegisterAsync(request);
 
             if (!result.Success)
-                return BadRequest(result);
+                return this.ToProblem(result);
 
-            return Ok(new
-            {
-                token = result.Data.Token,
-                userID = result.Data.UserID,
-                username = result.Data.Username
-            });
+            return Ok(result.Data);
         }
 
     }

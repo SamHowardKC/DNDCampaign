@@ -128,6 +128,9 @@ namespace BackEnd
                 };
             });
 
+            // Every error response uses the ProblemDetails shape
+            builder.Services.AddProblemDetails();
+
             // Controllers + Swagger
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -136,6 +139,12 @@ namespace BackEnd
             var app = builder.Build();
 
             app.UseForwardedHeaders();
+
+            // Unhandled exceptions become a 500 ProblemDetails instead of the framework default,
+            // and empty error responses (401 from [Authorize], 429 from the rate limiter)
+            // get a ProblemDetails body too
+            app.UseExceptionHandler();
+            app.UseStatusCodePages();
 
             app.UseCors("AllowFrontend");
 

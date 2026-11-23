@@ -1,5 +1,6 @@
 import { API_BASE } from "./config";
 import { getToken, logout } from "../auth/auth";
+import type { ProblemDetails } from "../interfaces/ProblemDetails";
 
 // Thrown when the server rejects our token (401). The stale token is cleared
 // before this is thrown, so callers just need to send the user back to /login.
@@ -31,24 +32,25 @@ export async function authFetch(
   return res;
 }
 
-// Pulls a human-readable message out of an error response, coping with both
-// shapes the backend can return:
-//   - Result<T> failures:            { success, error, data }
-//   - FluentValidation ProblemDetails: { errors: { field: [msg, ...] }, title }
+// Pulls a human-readable message out of an error response. Every backend error
+// is a ProblemDetails, so check its fields from most to least specific:
+//   - detail: the service's own message (e.g. "Email already in use.")
+//   - errors: FluentValidation's per-field messages
+//   - title:  the generic status text (e.g. "Too Many Requests")
 export async function extractError(res: Response): Promise<string> {
   try {
-    const body = await res.json();
+    const body: ProblemDetails = await res.json();
 
-    if (typeof body?.error === "string" && body.error.trim() !== "") {
-      return body.error;
+    if (typeof body.detail === "string" && body.detail.trim() !== "") {
+      return body.detail;
     }
 
-    if (body?.errors && typeof body.errors === "object") {
+    if (body.errors) {
       const first = Object.values(body.errors)[0];
       if (Array.isArray(first) && first.length > 0) return String(first[0]);
     }
 
-    if (typeof body?.title === "string") return body.title;
+    if (typeof body.title === "string") return body.title;
   } catch {
     // Body wasn't JSON — fall through to a generic message.
   }

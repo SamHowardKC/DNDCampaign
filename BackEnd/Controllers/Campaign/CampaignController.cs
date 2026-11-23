@@ -27,14 +27,14 @@ namespace BackEnd.Controllers.Campaign
         public async Task<IActionResult> GetActiveCampaignsForUser()
         {
             if (!TryGetUserId(out var userId))
-                return Unauthorized(Result<ActiveCampaignListResponse>.Fail("User ID not found in token"));
+                return Problem(detail: "User ID not found in token", statusCode: StatusCodes.Status401Unauthorized);
 
             var result = await _campaignService.GetActiveCampaignsForUserAsync(userId);
 
             if (!result.Success)
-                return NotFound(result);
+                return this.ToProblem(result);
 
-            return Ok(result);
+            return Ok(result.Data);
         }
 
         [Authorize]
@@ -42,14 +42,14 @@ namespace BackEnd.Controllers.Campaign
         public async Task<IActionResult> CreateCampaign(CreateCampaignRequest request)
         {
             if (!TryGetUserId(out var userId))
-                return Unauthorized(Result<ActiveCampaignListResponse>.Fail("User ID not found in token"));
+                return Problem(detail: "User ID not found in token", statusCode: StatusCodes.Status401Unauthorized);
 
             var result = await _campaignService.CreateCampaignAsync(request, userId);
 
             if (!result.Success)
-                return BadRequest(result);
+                return this.ToProblem(result);
 
-            return Ok(result);
+            return Ok(result.Data);
         }
 
         // Pulls the authenticated user's id out of the validated token. We emit the id

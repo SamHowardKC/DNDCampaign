@@ -17,10 +17,6 @@ namespace BackEnd.Services.Character.Implementation
         public async Task<Result<CharacterListResponse>> GetCharactersForUserAsync(Guid userId)
         {
             var charactersEntityList = await _characterRepository.GetByUserAsync(userId);
-            if (charactersEntityList == null)
-            {
-                return Result<CharacterListResponse>.Fail("No characters found for the user.");
-            }
 
             var response = new CharacterListResponse
             {

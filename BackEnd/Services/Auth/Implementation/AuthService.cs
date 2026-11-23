@@ -26,17 +26,17 @@ namespace BackEnd.Services.Auth.Implementation
             // get user
             var user = await _userRepository.GetByEmailAsync(request.Email);
             if (user == null)
-                return Result<AuthResponse>.Fail("Invalid email or password.");
+                return Result<AuthResponse>.Fail(ErrorType.Unauthorized, "Invalid email or password.");
 
             // verify password
             bool validPassword = _passwordHasher.Verify(request.Password, user.Password);
             if (!validPassword)
-                return Result<AuthResponse>.Fail("Invalid email or password.");
+                return Result<AuthResponse>.Fail(ErrorType.Unauthorized, "Invalid email or password.");
 
             // reject deactivated accounts — use the same generic message so we
             // don't reveal that the account exists but is disabled
             if (!user.IsActive)
-                return Result<AuthResponse>.Fail("Invalid email or password.");
+                return Result<AuthResponse>.Fail(ErrorType.Unauthorized, "Invalid email or password.");
 
             // generate jwt
             var token = _jwtProvider.GenerateToken(user);
@@ -56,7 +56,7 @@ namespace BackEnd.Services.Auth.Implementation
             var existingUser = await _userRepository.GetByEmailAsync(request.Email);
 
             if (existingUser != null)
-                return Result<AuthResponse>.Fail("Email already in use.");
+                return Result<AuthResponse>.Fail(ErrorType.Conflict, "Email already in use.");
 
             var user = new User
             {
