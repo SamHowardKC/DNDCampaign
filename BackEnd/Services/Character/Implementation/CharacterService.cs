@@ -31,17 +31,15 @@ namespace BackEnd.Services.Character.Implementation
                     ClassID = c.ClassID,
                     CreatedAt = c.CreatedAt,
 
-                    Campaigns = new CharacterCampaignResponse
+                    Campaigns = c.CharacterCampaigns.Select(cc => new CharacterCampaignListItem
                     {
-                        Campaigns = c.CharacterCampaigns.Select(cc => new CharacterCampaignListItem
-                        {
-                            //Level = cc.Level,
-                            Xp = cc.CharacterXP,
-                            MaxHp = cc.CharacterMaxHP,
-                            Hp = cc.CharacterHP,
-                            CreatedAt = cc.CreatedAt
-                        }).ToList()
-                    }
+                        CampaignID = cc.CampaignID,
+                        //Level = cc.Level,
+                        Xp = cc.CharacterXP,
+                        MaxHp = cc.CharacterMaxHP,
+                        Hp = cc.CharacterHP,
+                        CreatedAt = cc.CreatedAt
+                    }).ToList()
 
                 }).ToList()
             };

@@ -1,11 +1,9 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace BackEnd.DTOs.Auth
+﻿namespace BackEnd.DTOs.Auth
 {
     public class AuthResponse
     {
-        public string Token { get; set; } = default!;
-        public Guid UserID { get; set; } = default!;
-        public string Username { get; set; } = default!;
+        public required string Token { get; set; }
+        public required Guid UserID { get; set; }
+        public required string Username { get; set; }
     }
 }

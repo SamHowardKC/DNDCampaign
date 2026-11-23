@@ -90,7 +90,7 @@ public class CharacterServiceTests
         Assert.True(result.Success);
 
         var returnedCharacter = Assert.Single(result.Data.Characters);
-        var campaign = Assert.Single(returnedCharacter.Campaigns.Campaigns);
+        var campaign = Assert.Single(returnedCharacter.Campaigns);
 
         Assert.Equal(xp, campaign.Xp);
         Assert.Equal(hp, campaign.Hp);
@@ -101,7 +101,30 @@ public class CharacterServiceTests
     [Fact]
     public async Task GetCharactersForUserAsync_CharacterHasNoCampaigns_ReturnsEmptyCampaignList()
     {
+        var userId = Guid.NewGuid();
 
+        var character = new BackEnd.Entities.Character.Character
+        {
+            Name = "Test Character",
+            UserID = userId,
+            ClassID = Guid.NewGuid(),
+            CreatedAt = new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero)
+        };
+
+        var repositoryMock = new Mock<ICharacterRepository>();
+        repositoryMock
+            .Setup(r => r.GetByUserAsync(userId))
+            .ReturnsAsync(new List<BackEnd.Entities.Character.Character> { character });
+
+        var service = new CharacterService(repositoryMock.Object);
+
+        var result = await service.GetCharactersForUserAsync(userId);
+
+        Assert.True(result.Success);
+
+        var returnedCharacter = Assert.Single(result.Data.Characters, c => c.Id == character.Id);
+
+        Assert.Empty(returnedCharacter.Campaigns);
     }
 
     // No Characters, Existing user
