@@ -1,5 +1,4 @@
 ﻿using BackEnd.Entities;
-using Microsoft.OpenApi.Models;
 
 namespace BackEnd.Entities.Level
 {
