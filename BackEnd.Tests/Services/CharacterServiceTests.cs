@@ -1,8 +1,10 @@
 namespace BackEnd.Tests.Services;
 
-using Xunit;
+using BackEnd.Entities.Character;
 using BackEnd.Services.Character.Implementation;
 using BackEnd.Services.Character.Interface;
+using Moq;
+using Xunit;
 
 public class CharacterServiceTests
 {
@@ -13,7 +15,29 @@ public class CharacterServiceTests
     [InlineData(3)]
     public async Task GetCharactersForUserAsync_UserHasCharacters_ReturnsMappedCharacters(int characterCount)
     {
+        var userId = Guid.NewGuid();
 
+        var characterList = new List<BackEnd.Entities.Character.Character> { };
+
+        for (int i = 0; i < characterCount; i++)
+        {
+            characterList.Add(
+                new BackEnd.Entities.Character.Character
+                {
+                    Name = "NameExample" + i,
+                    ClassID = Guid.NewGuid(),
+                    CreatedAt = new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero).AddDays(i * 1000)
+                }
+            );
+        }
+
+        var repositoryMock = new Mock<ICharacterRepository>();
+
+        repositoryMock
+            .Setup(r => r.GetByUserAsync(userId))
+            .ReturnsAsync(characterList);
+
+        var service = new CharacterService(repositoryMock.Object);
     }
 
     // Existing Character with a campaign: checks CharacterXP/HP/MaxHP map to Xp/Hp/MaxHp
@@ -23,7 +47,40 @@ public class CharacterServiceTests
     [InlineData(6500, 0, 45)]
     public async Task GetCharactersForUserAsync_CharacterInCampaign_MapsCampaignStats(int xp, int hp, int maxHp)
     {
+        var userId = Guid.NewGuid();
 
+        var character = new BackEnd.Entities.Character.Character
+        {
+            Name = "Test Character",
+            UserID = userId,
+            CharacterCampaigns = new List<CharacterCampaign>
+            {
+                new CharacterCampaign
+                {
+                    CharacterXP = xp,
+                    CharacterHP = hp,
+                    CharacterMaxHP = maxHp
+                }
+            }
+        };
+
+        var repositoryMock = new Mock<ICharacterRepository>();
+        repositoryMock
+            .Setup(r => r.GetByUserAsync(userId))
+            .ReturnsAsync(new List<BackEnd.Entities.Character.Character> { character });
+
+        var service = new CharacterService(repositoryMock.Object);
+
+        var result = await service.GetCharactersForUserAsync(userId);
+
+        Assert.True(result.Success);
+
+        var returnedCharacter = Assert.Single(result.Data.Characters);
+        var campaign = Assert.Single(returnedCharacter.Campaigns.Campaigns);
+
+        Assert.Equal(xp, campaign.Xp);
+        Assert.Equal(hp, campaign.Hp);
+        Assert.Equal(maxHp, campaign.MaxHp);
     }
 
     // Existing Character with no campaigns
