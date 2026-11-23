@@ -38,6 +38,20 @@ public class CharacterServiceTests
             .ReturnsAsync(characterList);
 
         var service = new CharacterService(repositoryMock.Object);
+
+        var result = await service.GetCharactersForUserAsync(userId);
+
+        Assert.True(result.Success);
+        Assert.Equal(characterCount, result.Data.Characters.Count);
+
+        foreach (var character in characterList)
+        {
+            var returnedCharacter = Assert.Single(result.Data.Characters, c => c.Id == character.Id);
+
+            Assert.Equal(character.Name, returnedCharacter.Name);
+            Assert.Equal(character.ClassID, returnedCharacter.ClassID);
+            Assert.Equal(character.CreatedAt, returnedCharacter.CreatedAt);
+        }
     }
 
     // Existing Character with a campaign: checks CharacterXP/HP/MaxHP map to Xp/Hp/MaxHp
